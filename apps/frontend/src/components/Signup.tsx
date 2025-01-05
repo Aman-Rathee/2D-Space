@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { ArrowRight } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
 
@@ -35,10 +36,11 @@ interface FormData {
 }
 
 const SignupPage = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     const onSubmit = async (data: FormData) => {
-        console.log('Form submitted:', data);
+        setIsLoading(true);
         try {
             const response = await axios.post(`api/v1/auth/signup`, {
                 email: data.email,
@@ -46,6 +48,8 @@ const SignupPage = () => {
             })
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -59,6 +63,7 @@ const SignupPage = () => {
                 <div className="w-full max-w-md relative backdrop-blur-2xl rounded-3xl shadow-2xl p-8 bg-purple-500/30 ">
                     <div className="mb-8 text-center">
                         <h2 className="text-4xl font-bold">Create Account</h2>
+                        <p className="text-zinc-600 mt-2">Please enter your details to Sign up</p>
                     </div>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
@@ -82,8 +87,11 @@ const SignupPage = () => {
                             </div>
                         ))}
 
-                        <button type="submit" className="w-full bg-violet-400 hover:bg-violet-500 text-white rounded-xl py-4 font-medium flex items-center justify-center gap-2 group transition-all">
-                            <span>Sign Up</span>
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="w-full bg-violet-400 hover:bg-violet-500 text-white rounded-xl py-4 font-medium flex items-center justify-center gap-2 group transition-all">
+                            <span>{isLoading ? 'Sign Up...' : 'Sign Up'}</span>
                             <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                         </button>
                     </form>

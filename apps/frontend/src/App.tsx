@@ -4,6 +4,7 @@ import Home from "./components/Home"
 import Footer from "./components/Footer"
 import GameCanvas from "./game/scenes/GameCanvas"
 import SignupPage from "./components/Signup"
+import LoginPage from "./components/Login"
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
             <Route path="/about" element={<GameCanvas />} />
           </Route>
           <Route path="/signup" element={<SignupPage />} />
+          <Route path="/login" element={<LoginPage />} />
           <Route path="/space-demo" element={<GameCanvas />} />
         </Routes>
       </BrowserRouter>
