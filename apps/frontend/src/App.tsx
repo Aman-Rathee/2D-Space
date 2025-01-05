@@ -1,24 +1,35 @@
-import { BrowserRouter, Route, Routes } from "react-router"
+import { BrowserRouter, Outlet, Route, Routes } from "react-router"
 import Navbar from "./components/Navbar"
-import Home from "./components/Home."
+import Home from "./components/Home"
 import Footer from "./components/Footer"
+import GameCanvas from "./game/scenes/GameCanvas"
+import SignupPage from "./components/Signup"
 
 function App() {
 
   return (
     <>
       <BrowserRouter>
-        <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
-          {/* <Route path="/about" element={<About />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/try" element={<Try />} /> */}
+          <Route path="/" element={<Layout />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<GameCanvas />} />
+          </Route>
+          <Route path="/signup" element={<SignupPage />} />
+          <Route path="/space-demo" element={<GameCanvas />} />
         </Routes>
-        <Footer/>
       </BrowserRouter>
     </>
   )
 }
 
 export default App
+
+
+const Layout = () => (
+  <>
+    <Navbar />
+    <Outlet />
+    <Footer />
+  </>
+);

@@ -32,7 +32,7 @@ const Home = () => {
                             </div>
                         </div>
                         <div className="flex items-center space-x-6">
-                            <button className="group relative px-8 py-3 border-2 hover:text-gray-600 text-black rounded-3xl overflow-hidden">
+                            <button className="group relative px-8 py-3 border-2 border-gray-400 hover:text-gray-800 text-black rounded-3xl overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-r from-yellow-200 to-blue-300 opacity-0 group-hover:opacity-100 transition-opacity" />
                                 <span className="relative flex items-center">
                                     Launch Space
@@ -41,7 +41,7 @@ const Home = () => {
                             </button>
 
                             <button className="text-gray-600 hover:text-gray-900 font-medium">
-                                Learn more →
+                                Join Space →
                             </button>
                         </div>
                     </div>
