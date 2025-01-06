@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { ArrowRight } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
+import { baseUrl } from './Signup';
 
 const formFields = [
     {
@@ -32,16 +33,21 @@ interface FormData {
 }
 
 const LoginPage = () => {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const { register, handleSubmit, formState: { errors }, setError } = useForm();
 
     const onSubmit = async (data: FormData) => {
         setIsLoading(true);
         try {
-            const response = await axios.post(`api/v1/auth/login`, {
+            const response = await axios.post(`${baseUrl}api/v1/auth/login`, {
                 email: data.email,
                 password: data.password
             })
+            if (response.status == 200) {
+                navigate('/')
+            }
+            localStorage.setItem('token', response.data.token)
         } catch (error) {
             setError('root', {
                 type: 'manual',

@@ -19,7 +19,7 @@ export const signup = async (req: Request, res: Response) => {
     const hashedPassword = await hash(parsedData.data.password)
     const user = await client.user.create({
       data: {
-        username: parsedData.data.username,
+        email: parsedData.data.email,
         password: hashedPassword,
         role: parsedData.data.type === "admin" ? "Admin" : "User",
       }
@@ -31,7 +31,7 @@ export const signup = async (req: Request, res: Response) => {
   }
 };
 
-export const signin = async (req: Request, res: Response) => {
+export const login = async (req: Request, res: Response) => {
   const parsedData = signinSchema.safeParse(req.body)
   if (!parsedData.success) {
     res.status(400).json({ message: "Invalid input" })
@@ -40,7 +40,7 @@ export const signin = async (req: Request, res: Response) => {
 
   try {
     const user = await client.user.findUnique({
-      where: { username: parsedData.data.username }
+      where: { email: parsedData.data.email }
     })
 
     if (!user) {

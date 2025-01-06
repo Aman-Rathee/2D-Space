@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
 
+export const baseUrl = 'http://localhost:3001/'
+
 const formFields = [
     {
         name: 'email',
@@ -42,10 +44,11 @@ const SignupPage = () => {
     const onSubmit = async (data: FormData) => {
         setIsLoading(true);
         try {
-            const response = await axios.post(`api/v1/auth/signup`, {
+            const response = await axios.post(`${baseUrl}api/v1/auth/signup`, {
                 email: data.email,
                 password: data.password
             })
+            console.log(response);
         } catch (error) {
             console.error("Error:", error);
         } finally {
