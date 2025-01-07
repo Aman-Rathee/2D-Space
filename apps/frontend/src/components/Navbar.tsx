@@ -6,7 +6,7 @@ const Navbar = () => {
             <div className="flex items-center space-x-8">
                 <Link to="/" className="text-xl font-bold">2D-Space</Link>
                 <nav className="space-x-6">
-                    <Link to="/#" className="text-gray-600 hover:text-gray-900">About us</Link>
+                    <Link to="/spaces" className="text-gray-600 hover:text-gray-900">My Spaces</Link>
                     <Link to="/space-demo" className="text-gray-600 hover:text-gray-900">Demo</Link>
                 </nav>
             </div>

@@ -3,7 +3,7 @@ import { ArrowRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import { useState } from 'react';
-import { baseUrl } from './Signup';
+import { backendUrl } from './Signup';
 
 const formFields = [
     {
@@ -40,7 +40,7 @@ const LoginPage = () => {
     const onSubmit = async (data: FormData) => {
         setIsLoading(true);
         try {
-            const response = await axios.post(`${baseUrl}api/v1/auth/login`, {
+            const response = await axios.post(`${backendUrl}api/v1/auth/login`, {
                 email: data.email,
                 password: data.password
             })

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
 
-export const baseUrl = 'http://localhost:3001/'
+export const backendUrl = 'http://localhost:3001/'
 
 const formFields = [
     {
@@ -44,7 +44,7 @@ const SignupPage = () => {
     const onSubmit = async (data: FormData) => {
         setIsLoading(true);
         try {
-            const response = await axios.post(`${baseUrl}api/v1/auth/signup`, {
+            const response = await axios.post(`${backendUrl}api/v1/auth/signup`, {
                 email: data.email,
                 password: data.password
             })

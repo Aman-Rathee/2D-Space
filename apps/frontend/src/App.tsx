@@ -5,6 +5,8 @@ import Footer from "./components/Footer"
 import GameCanvas from "./game/scenes/GameCanvas"
 import SignupPage from "./components/Signup"
 import LoginPage from "./components/Login"
+import CreateSpace from "./components/CreateSpace"
+import MySpaces from "./components/MySpaces"
 
 function App() {
 
@@ -15,10 +17,12 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<GameCanvas />} />
+            <Route path="/space/create" element={<CreateSpace />} />
+            <Route path="/spaces" element={<MySpaces />} />
           </Route>
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/space-demo" element={<GameCanvas />} />
+          <Route path="/space:id" element={<GameCanvas />} />
         </Routes>
       </BrowserRouter>
     </>
