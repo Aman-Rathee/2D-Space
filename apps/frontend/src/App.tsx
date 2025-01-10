@@ -22,7 +22,7 @@ function App() {
           </Route>
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/space:id" element={<GameCanvas />} />
+          <Route path="/space/:id" element={<GameCanvas />} />
         </Routes>
       </BrowserRouter>
     </>
