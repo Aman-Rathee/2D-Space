@@ -1,4 +1,5 @@
 import { ArrowRight, Gamepad2, Sparkles, Users } from "lucide-react";
+import { Link } from "react-router";
 
 const Home = () => {
     return (
@@ -39,14 +40,14 @@ const Home = () => {
                                     <ArrowRight className="ml-2 h-4 w-4" />
                                 </span>
                             </button>
-
-                            <button className="text-gray-600 hover:text-gray-900 font-medium">
-                                Join Space →
-                            </button>
+                            <Link to='/join'>
+                                <button className="text-gray-600 hover:text-gray-900 font-medium">
+                                    Join Space →
+                                </button>
+                            </Link>
                         </div>
                     </div>
 
-                    {/* Right Image Container */}
                     <div className="relative">
                         <div className="rounded-2xl border-4 border-white overflow-hidden h-5/6 bg-black">
                             <img

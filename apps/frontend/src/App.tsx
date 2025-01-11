@@ -7,6 +7,7 @@ import SignupPage from "./components/Signup"
 import LoginPage from "./components/Login"
 import CreateSpace from "./components/CreateSpace"
 import MySpaces from "./components/MySpaces"
+import JoinSpace from "./components/JoinSpace"
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
             <Route path="/about" element={<GameCanvas />} />
             <Route path="/space/create" element={<CreateSpace />} />
             <Route path="/spaces" element={<MySpaces />} />
+            <Route path="/join" element={<JoinSpace />} />
           </Route>
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
