@@ -14,6 +14,7 @@ export default class MultiplayerGame extends Scene {
     constructor(id: string) {
         super("MultiplayerGame");
         this.token = localStorage.getItem("token");
+        this.userId = decodeJWT(this.token!)
         this.spaceId = id;
     }
 
@@ -56,7 +57,6 @@ export default class MultiplayerGame extends Scene {
     update() {
         if (!this.cursors || !this.player) return;
 
-        // Handle player movement
         this.player.setVelocity(0);
 
         let moving = false;
@@ -82,13 +82,11 @@ export default class MultiplayerGame extends Scene {
         }
 
         if (moving) {
+            this.sendPlayerPosition();
             this.player.anims.play(`walk-${this.lastDirection}`, true);
         } else {
             this.player.anims.play(`idle-${this.lastDirection}`);
         }
-
-        // Send player position to the server
-        this.sendPlayerPosition();
     }
 
     private createMap() {
@@ -98,18 +96,6 @@ export default class MultiplayerGame extends Scene {
         this.map.createLayer('ground', tileSet, 0, 0);
         this.map.createLayer('flor', tileSet, 0, 0);
         this.map.createLayer('interior', tileSet, 0, 0);
-
-        const boundariesLayer = this.map.getObjectLayer('boundaries');
-        const boundaries = this.physics.add.staticGroup();
-        boundariesLayer!.objects.forEach((boundary: any) => {
-            const { x, y, width, height } = boundary;
-            boundaries.add(
-                this.add.rectangle(x! + width! / 2, y! + height! / 2, width, height)
-            );
-        });
-        if (this.player) {
-            this.physics.add.collider(this.player, boundaries);
-        }
     }
 
     private createAnimation() {
@@ -165,11 +151,8 @@ export default class MultiplayerGame extends Scene {
     private handleServerMessage(data: any) {
         switch (data.type) {
             case "space-joined":
-                // Spawn the player
                 this.spawnPlayer(data.payload.spawn.x, data.payload.spawn.y);
-                this.userId = data.payload.userId;
 
-                // Add other players to the map
                 data.payload.users.forEach((user: any) => {
                     this.addPlayer(user.id, user.x, user.y);
                 });
@@ -202,10 +185,21 @@ export default class MultiplayerGame extends Scene {
         this.player = this.physics.add.sprite(spawnX, spawnY, "character");
         this.player.setCollideWorldBounds(true);
 
-        // Set up camera to follow the player
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(2);
         this.cameras.main.setBackgroundColor('#000');
+
+        const boundariesLayer = this.map.getObjectLayer('boundaries');
+        const boundaries = this.physics.add.staticGroup();
+        boundariesLayer!.objects.forEach((boundary: any) => {
+            const { x, y, width, height } = boundary;
+            boundaries.add(
+                this.add.rectangle(x! + width! / 2, y! + height! / 2, width, height)
+            );
+        });
+        if (this.player) {
+            this.physics.add.collider(this.player, boundaries);
+        }
     }
 
     private addPlayer(id: string, x: number, y: number) {
@@ -244,5 +238,21 @@ export default class MultiplayerGame extends Scene {
             },
         })
         );
+    }
+}
+
+function decodeJWT(token: string) {
+    try {
+        const parts = token.split(".");
+        if (parts.length !== 3) {
+            throw new Error("Invalid JWT structure");
+        }
+        const payloadBase64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+        const payloadJson = atob(payloadBase64);
+        const payload = JSON.parse(payloadJson);
+        return payload;
+    } catch (error) {
+        console.error("Failed to decode JWT:", error);
+        return null;
     }
 }

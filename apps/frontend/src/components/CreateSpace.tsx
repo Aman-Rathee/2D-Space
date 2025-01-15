@@ -45,7 +45,7 @@ const CreateSpace = () => {
         try {
             const response = await axios.post(`${backendUrl}api/v1/space/create`, {
                 name: data.name,
-                dimensions: '90x90',
+                dimensions: '960x640',
                 mapId: 'cm5mns9d50001wm18ifphvgze'
             }, {
                 headers: {
