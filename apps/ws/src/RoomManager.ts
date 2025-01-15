@@ -27,7 +27,7 @@ export class RoomManager {
         if (!this.rooms.has(spaceId)) {
             return;
         }
-        this.rooms.set(spaceId, (this.rooms.get(spaceId)?.filter((u) => u.id !== user.id) ?? []));
+        this.rooms.set(spaceId, (this.rooms.get(spaceId)?.filter((u) => u.userId !== user.userId) ?? []));
     }
 
     public broadcast(message: any, user: User, roomId: string) {
@@ -35,7 +35,7 @@ export class RoomManager {
             return;
         }
         this.rooms.get(roomId)?.forEach((u) => {
-            if (u.id !== user.id) {
+            if (u.userId !== user.userId) {
                 u.send(message);
             }
         });

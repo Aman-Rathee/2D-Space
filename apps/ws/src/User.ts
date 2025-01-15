@@ -7,25 +7,15 @@ import { RoomManager } from "./RoomManager";
 const JWT_SECRET = process.env.JWT_SECRET
 if (!JWT_SECRET) throw new Error("JWT_SECRET is not defined in environment variables");
 
-function getRandomString(length: number) {
-    const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    let result = "";
-    for (let i = 0; i < length; i++) {
-        result += characters.charAt(Math.floor(Math.random() * characters.length));
-    }
-    return result;
-}
 
 export class User {
     private ws: WebSocket
     private spaceId?: string;
-    private userId?: string;
+    public userId?: string;
     private x: number;
     private y: number;
-    public id: string;
 
     constructor(ws: WebSocket) {
-        this.id = getRandomString(10);
         this.ws = ws;
         this.x = 0;
         this.y = 0;
@@ -35,6 +25,8 @@ export class User {
     initHandler() {
         this.ws.on("message", async (data) => {
             const parsedData = JSON.parse(data.toString());
+            console.log('parseddDataa', parsedData);
+
             switch (parsedData.type) {
                 case "join":
                     const spaceId = parsedData.payload.spaceId;
@@ -74,7 +66,7 @@ export class User {
                                 x: this.x,
                                 y: this.y
                             },
-                            users: RoomManager.getInstance().rooms.get(spaceId)?.filter(x => x.id !== this.id)?.map((u) => ({ id: u.id })) ?? []
+                            users: RoomManager.getInstance().rooms.get(spaceId)?.filter(x => x.userId !== this.userId)?.map((u) => ({ id: u.userId })) ?? []
                         }
                     });
                     RoomManager.getInstance().broadcast({
@@ -85,6 +77,29 @@ export class User {
                             y: this.y
                         }
                     }, this, this.spaceId!);
+                    break;
+
+                case "player-moved":
+                    if (!this.spaceId || !this.userId) {
+                        this.send({
+                            type: "error",
+                            payload: {
+                                message: "Player not in a valid space"
+                            }
+                        });
+                        return;
+                    }
+
+                    this.x = parsedData.payload.x;
+                    this.y = parsedData.payload.y;
+                    RoomManager.getInstance().broadcast({
+                        type: "player-moved",
+                        payload: {
+                            userId: this.userId,
+                            x: this.x,
+                            y: this.y,
+                        }
+                    }, this, this.spaceId);
                     break;
             }
         })
