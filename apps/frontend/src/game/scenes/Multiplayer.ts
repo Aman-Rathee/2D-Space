@@ -167,7 +167,7 @@ export default class MultiplayerGame extends Scene {
                 break;
 
             case "player-moved":
-                this.updatePlayerPosition(data.payload.userId, data.payload.x, data.payload.y);
+                this.updatePlayerPosition(data.payload.userId, data.payload.x, data.payload.y, data.payload.direction);
                 break;
 
             default:
@@ -203,7 +203,7 @@ export default class MultiplayerGame extends Scene {
     }
 
     private addPlayer(id: string, x: number, y: number) {
-        const otherPlayer = this.physics.add.sprite(x, y, "character");
+        const otherPlayer = this.physics.add.sprite(x, y, "character", 936);
         this.players.set(id, otherPlayer);
     }
 
@@ -215,10 +215,33 @@ export default class MultiplayerGame extends Scene {
         }
     }
 
-    private updatePlayerPosition(id: string, x: number, y: number) {
+    private playerTimers: Map<string, number> = new Map();
+
+    private updatePlayerPosition(id: string, x: number, y: number, direction: string) {
         const player = this.players.get(id);
         if (player) {
-            player.setPosition(x, y);
+            if (this.playerTimers.has(id)) {
+                clearTimeout(this.playerTimers.get(id)!);
+            }
+
+            const prevX = player.x;
+            const prevY = player.y;
+            const isMoving = prevX !== x || prevY !== y;
+
+            if (isMoving) {
+                player.setPosition(x, y);
+                player.anims.play(`walk-${direction}`, true);
+            }
+
+            const idleTimer = setTimeout(() => {
+                const currentAnim = player.anims.currentAnim?.key;
+                if (currentAnim?.includes("walk")) {
+                    const idleAnim = currentAnim.replace("walk", "idle");
+                    player.anims.play(idleAnim, true);
+                }
+            }, 200);
+
+            this.playerTimers.set(id, idleTimer);
         }
     }
 
@@ -228,6 +251,7 @@ export default class MultiplayerGame extends Scene {
         const position = {
             x: this.player.x,
             y: this.player.y,
+            direction: this.lastDirection
         };
 
         this.ws.send(JSON.stringify({

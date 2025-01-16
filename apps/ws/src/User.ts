@@ -90,14 +90,16 @@ export class User {
                         return;
                     }
 
-                    this.x = parsedData.payload.x;
-                    this.y = parsedData.payload.y;
+                    const { x, y, direction } = parsedData.payload;
+                    this.x = x;
+                    this.y = y;
                     RoomManager.getInstance().broadcast({
                         type: "player-moved",
                         payload: {
                             userId: this.userId,
-                            x: this.x,
-                            y: this.y,
+                            x,
+                            y,
+                            direction
                         }
                     }, this, this.spaceId);
                     break;
