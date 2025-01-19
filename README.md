@@ -1,81 +1,107 @@
-# Turborepo starter
+# 2D Metaverse Space
 
-This is an official starter Turborepo.
+An open-source virtual space platform built with Turborepo, React.js, and TypeScript.
 
-## Using this example
+##  Inspiration
 
-Run the following command:
+This project is inspired by popular platforms like **[Gather Town](https://gather.town)**.
 
-```sh
-npx create-turbo@latest
+
+##  Features
+
+- **Real-time Communication**: Built-in WebSocket support
+- **Space Management**: Multiple virtual spaces with user presence
+- **Monorepo Structure**: Powered by [Turborepo](https://turbo.build/repo)
+- **Full-Stack Architecture**:
+  - React.js frontend application
+  - WebSocket server
+  - Node.js express backend
+  - Postgress Database
+
+## 🛠️ Installation
+
+### Running Locally
+
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/Aman-Rathee/2D-Space.git
+    ```
+
+2. Navigate to the project directory:
+    ```bash
+    cd 2D-Space
+    ```
+    
+3. Install dependencies:
+    
+    ```bash
+    pnpm install
+    ```
+
+4. Start development:
+    
+    ```bash
+    pnpm dev
+    ```
+
+
+## 📁 Project Structure
+    
+This repository is structured as follows:
+    
+```
+    ├── apps
+    │   └──
+    │       ├── frontend
+    │       ├── https
+    │       └── ws
+    └── packages
+        └── db
+```    
+
+
+| Path                  | Description                               |
+| --------------------- | ----------------------------------------  |
+| `apps/frontent`       | The React.js application for the website. |
+| `apps/https`          | The Node.js express backend.              |
+| `apps/ws`             | The WebSocket server.                     |
+| `packages/db`         | The PostgreSQL Database.                  |
+
+
+
+## Contributing
+Thanks for your interest in contributing to 2D Metaverse Space. We're happy to have you here.
+
+### To contribute follow these steps:
+
+1. [Fork the repository](https://docs.github.com/en/free-pro-team@latest/github/getting-started-with-github/fork-a-repo).
+
+2. Clone the fork to your local machine:
+
+```bash
+git clone https://github.com/<your username>/2D-Space.git
+cd 2D-Space
 ```
 
-## What's inside?
+3. Create a new branch
 
-This Turborepo includes the following packages/apps:
-
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm build
+```bash
+git checkout -b feature/fooBar
 ```
 
-### Develop
+4. Make your changes and commit them
 
-To develop all apps and packages, run the following command:
-
-```
-cd my-turborepo
-pnpm dev
+```bash
+git commit -am 'Add fooBar feature'
 ```
 
-### Remote Caching
+5. Push to the branch
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
+```bash
+git push origin feature/fooBar
 ```
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+6. Go to [the repository](https://github.com/Aman-Rathee/2D-Space/pulls) and [make a Pull Request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+---
+We hope you enjoy building with **2D Metaverse Space**!
