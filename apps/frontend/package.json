@@ -13,6 +13,7 @@
     "axios": "^1.7.9",
     "clsx": "^2.1.1",
     "lucide-react": "^0.469.0",
+    "mediasoup-client": "^3.8.1",
     "phaser": "^3.87.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

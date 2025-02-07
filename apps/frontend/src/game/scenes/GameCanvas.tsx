@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import Preloader from "./Preloaader";
 import MultiplayerGame from "./Multiplayer";
 import { useParams } from "react-router";
+import { VideoCall } from "../../components/VideoCall";
 
 function GameCanvas() {
     const params = useParams();
@@ -33,7 +34,10 @@ function GameCanvas() {
 
     return (
         <>
-            <div id="phaser-game" className="flex bg-black justify-center" key='phaser-gamer' ref={gameContainerRef} />
+            <div className="h-screen w-screen flex items-center justify-center bg-slate-800 overflow-hidden">
+                <div id="phaser-game" key='phaser-gamer' ref={gameContainerRef} />
+                <VideoCall />
+            </div>
         </>
     )
 }

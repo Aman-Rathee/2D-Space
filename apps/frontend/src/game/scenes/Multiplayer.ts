@@ -187,7 +187,7 @@ export default class MultiplayerGame extends Scene {
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(2);
-        this.cameras.main.setBackgroundColor('#000');
+        this.cameras.main.setBackgroundColor('#1e293b');
 
         const boundariesLayer = this.map.getObjectLayer('boundaries');
         const boundaries = this.physics.add.staticGroup();
