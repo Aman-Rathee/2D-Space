@@ -2,7 +2,7 @@ import { WebSocketServer } from 'ws';
 import { User } from './manager/User';
 import { MediaSoupSFU } from './manager/MediaSoupSFU';
 
-const wss = new WebSocketServer({ port: 8080 });
+const wss = new WebSocketServer({ port: 8081 });
 const mediaSoupSFU = MediaSoupSFU.getInstance();
 
 async function main() {

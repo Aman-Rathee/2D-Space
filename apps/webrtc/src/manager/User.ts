@@ -27,11 +27,8 @@ export class User {
                 console.log('Received message:', parsedData);
 
                 switch (parsedData.type) {
-                    case "createRoom":
-                        await this.mediaSoupSFU.createRoom(this, parsedData.roomId);
-                        break;
                     case "joinRoom":
-                        await this.mediaSoupSFU.joinRoom(this, parsedData.roomId);
+                        await this.mediaSoupSFU.createOrJoinRoom(this, parsedData.roomId);
                         break;
                     case "createTransport":
                         await this.mediaSoupSFU.createWebRTCTransport(this, parsedData.direction);

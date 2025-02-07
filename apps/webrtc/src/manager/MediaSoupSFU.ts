@@ -35,41 +35,34 @@ export class MediaSoupSFU {
         });
     }
 
-    async createRoom(user: User, roomId: string) {
-        if (this.rooms.has(roomId)) {
-            user.send({ type: 'roomExists' });
-            return;
-        }
-
-        const router = await this.worker.createRouter({
-            mediaCodecs: [
-                {
-                    kind: 'audio',
-                    mimeType: 'audio/opus',
-                    clockRate: 48000,
-                    channels: 2
-                },
-                {
-                    kind: 'video',
-                    mimeType: 'video/VP8',
-                    clockRate: 90000
-                }
-            ]
-        });
-
-        this.rooms.set(roomId, { router, users: new Set([user]) });
-        user.send({ type: 'roomCreated', roomId });
-    }
-
-    async joinRoom(user: User, roomId: string) {
+    async createOrJoinRoom(user: User, roomId: string) {
         const room = this.rooms.get(roomId);
-        if (!room) {
-            user.send({ type: 'roomNotFound' });
-            return;
-        }
 
-        room.users.add(user);
-        user.send({ type: 'roomJoined', roomId });
+        if (room) {
+            room.users.add(user);
+            user.send({ type: 'roomJoined', rtpCapabilities: room.router.rtpCapabilities });
+        } else {
+            const router = await this.worker.createRouter({
+                mediaCodecs: [
+                    {
+                        kind: 'audio',
+                        mimeType: 'audio/opus',
+                        clockRate: 48000,
+                        channels: 2
+                    },
+                    {
+                        kind: 'video',
+                        mimeType: 'video/VP8',
+                        clockRate: 90000,
+                        parameters: {
+                            'x-google-start-bitrate': 1000
+                        }
+                    }
+                ]
+            });
+            this.rooms.set(roomId, { router, users: new Set([user]) });
+            user.send({ type: 'roomJoined', rtpCapabilities: router.rtpCapabilities });
+        }
     }
 
     async createWebRTCTransport(user: User, direction: string) {
@@ -101,7 +94,7 @@ export class MediaSoupSFU {
         if (!transport) return;
 
         await transport.connect({ dtlsParameters: data.dtlsParameters });
-        user.send({ type: 'transportConnected' });
+        // user.send({ type: 'transportConnected' });
     }
 
     async produceMedia(user: User, data: any) {
@@ -114,10 +107,13 @@ export class MediaSoupSFU {
         });
 
         user.addProducer(producer.id, producer);
-        user.send({
-            type: 'mediaProduced',
-            producerId: producer.id
-        });
+        // Todo inform consumers
+
+        // user.send({
+        //     type: 'mediaProduced',
+        //     producerId: producer.id,
+        //     producersExists: user.producers.size > 1 ? true : false
+        // });
 
         const room = this.findRoomForUser(user);
         if (!room) return;
@@ -133,6 +129,17 @@ export class MediaSoupSFU {
         });
     }
 
+    // async getProducers(user: User) {
+    //     const room = this.findRoomForUser(user);
+    //     if (!room) return;
+    //     let producersList: any[] = []
+    //     room?.users.forEach(producer => {
+    //         if (producer !== user) {
+    //             producersList = [...producersList, producer.id]
+    //         }
+    //     })
+    // }
+
     async consumeMedia(user: User, data: any) {
         const room = this.findRoomForUser(user);
         if (!room) return;
@@ -140,9 +147,17 @@ export class MediaSoupSFU {
         const transport = user.getTransport(data.transportId);
         if (!transport) return;
 
+        const canConsume = room.router.canConsume({ producerId: data.producerId, rtpCapabilities: data.rtpCapabilities, });
+
+        if (!canConsume) {
+            console.error('Cannot consume: Incompatible RTP capabilities');
+            return;
+        }
+
         const consumer = await transport.consume({
             producerId: data.producerId,
-            rtpCapabilities: data.rtpCapabilities
+            rtpCapabilities: data.rtpCapabilities,
+            paused: true
         });
 
         user.addConsumer(consumer.id, consumer);
