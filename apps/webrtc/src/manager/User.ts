@@ -24,23 +24,32 @@ export class User {
         this.ws.on("message", async (data) => {
             try {
                 const parsedData = JSON.parse(data.toString());
-                console.log('Received message:', parsedData);
+                // console.log('Received message:', parsedData);
 
                 switch (parsedData.type) {
                     case "joinRoom":
                         await this.mediaSoupSFU.createOrJoinRoom(this, parsedData.roomId);
                         break;
-                    case "createTransport":
-                        await this.mediaSoupSFU.createWebRTCTransport(this, parsedData.direction);
+                    case "requestSendTransport":
+                        await this.mediaSoupSFU.createSendWebRTCTransport(this);
                         break;
-                    case "connectTransport":
-                        await this.mediaSoupSFU.connectTransport(this, parsedData);
+                    case "requestReceiveTransport":
+                        await this.mediaSoupSFU.createReceiveWebRTCTransport(this);
+                        break;
+                    case "connectProducerTransport":
+                        await this.mediaSoupSFU.connectProducerTransport(this, parsedData);
+                        break;
+                    case "connectReceiveTransport":
+                        await this.mediaSoupSFU.connectReceiveTransport(this, parsedData);
                         break;
                     case "produceMedia":
                         await this.mediaSoupSFU.produceMedia(this, parsedData);
                         break;
                     case "consumeMedia":
                         await this.mediaSoupSFU.consumeMedia(this, parsedData);
+                        break;
+                    case "resume":
+                        await this.mediaSoupSFU.resume(this, parsedData);
                         break;
                     default:
                         console.warn('Unknown message type:', parsedData.type);
@@ -68,8 +77,16 @@ export class User {
         this.producers.set(id, producer);
     }
 
+    public getProducersId(): string[] {
+        return Array.from(this.producers.keys());
+    }
+
     public addConsumer(id: string, consumer: Consumer): void {
         this.consumers.set(id, consumer);
+    }
+
+    public getConsumer(id: string): any {
+        return this.consumers.get(id);
     }
 
     public cleanup(): void {

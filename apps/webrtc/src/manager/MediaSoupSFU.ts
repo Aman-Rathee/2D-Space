@@ -65,21 +65,21 @@ export class MediaSoupSFU {
         }
     }
 
-    async createWebRTCTransport(user: User, direction: string) {
+    async createSendWebRTCTransport(user: User) {
         const room = this.findRoomForUser(user);
         if (!room) return;
 
         const transport = await room.router.createWebRtcTransport({
-            listenIps: [{ ip: '0.0.0.0', announcedIp: undefined }],
+            listenIps: [{ ip: '127.0.0.1', announcedIp: '127.0.0.1' }],
             enableUdp: true,
             enableTcp: true,
             preferUdp: true
         });
-
         user.addTransport(transport.id, transport);
+        console.log('ice candidates , ', transport.iceCandidates);
+        
         user.send({
-            type: 'transportCreated',
-            direction,
+            type: 'sendTransportCreated',
             transportOptions: {
                 id: transport.id,
                 iceParameters: transport.iceParameters,
@@ -89,56 +89,82 @@ export class MediaSoupSFU {
         });
     }
 
-    async connectTransport(user: User, data: any) {
-        const transport = user.getTransport(data.transportId);
-        if (!transport) return;
-
-        await transport.connect({ dtlsParameters: data.dtlsParameters });
-        // user.send({ type: 'transportConnected' });
-    }
-
-    async produceMedia(user: User, data: any) {
-        const transport = user.getTransport(data.transportId);
-        if (!transport) return;
-
-        const producer = await transport.produce({
-            kind: data.kind,
-            rtpParameters: data.rtpParameters
-        });
-
-        user.addProducer(producer.id, producer);
-        // Todo inform consumers
-
-        // user.send({
-        //     type: 'mediaProduced',
-        //     producerId: producer.id,
-        //     producersExists: user.producers.size > 1 ? true : false
-        // });
-
+    async createReceiveWebRTCTransport(user: User) {
         const room = this.findRoomForUser(user);
         if (!room) return;
 
-        room.users.forEach(peer => {
-            if (peer !== user) {
-                peer.send({
-                    type: 'newPeerProducer',
-                    producerId: producer.id,
-                    kind: data.kind
-                });
+        const transport = await room.router.createWebRtcTransport({
+            listenIps: [{ ip: '127.0.0.1', announcedIp: '127.0.0.1' }],
+            enableUdp: true,
+            enableTcp: true,
+            preferUdp: true
+        });
+        user.addTransport(transport.id, transport);
+        user.send({
+            type: 'receiveTransportCreated',
+            transportOptions: {
+                id: transport.id,
+                iceParameters: transport.iceParameters,
+                iceCandidates: transport.iceCandidates,
+                dtlsParameters: transport.dtlsParameters
             }
         });
     }
 
-    // async getProducers(user: User) {
-    //     const room = this.findRoomForUser(user);
-    //     if (!room) return;
-    //     let producersList: any[] = []
-    //     room?.users.forEach(producer => {
-    //         if (producer !== user) {
-    //             producersList = [...producersList, producer.id]
-    //         }
-    //     })
-    // }
+    async connectProducerTransport(user: User, data: any) {
+        const transport = user.getTransport(data.transportId);
+        if (!transport) return console.log('transport not found of produce');
+        try {
+            await transport.connect({ dtlsParameters: data.dtlsParameters });
+        } catch (error) {
+            console.error('Error connecting producer transport:', error);
+        }
+    }
+
+    async connectReceiveTransport(user: User, data: any) {
+        const transport = user.getTransport(data.transportId)
+        if (!transport) return console.log('transport not found of receive ');
+        try {
+            await transport.connect({ dtlsParameters: data.dtlsParameters });
+        } catch (error) {
+            console.error('Error connecting receive transport:', error);
+        }
+    }
+
+    async produceMedia(user: User, data: any) {
+        const transport = user.getTransport(data.transportId);
+        if (!transport) return console.log('transport not found while creating producer');
+        try {
+            const producer = await transport.produce({
+                kind: data.kind,
+                rtpParameters: data.rtpParameters
+            });
+            if (!producer) return console.log('Producer is not created')
+            user.addProducer(producer.id, producer);
+            const room = this.findRoomForUser(user);
+            if (!room) return console.log('Room not found');
+
+            room.users.forEach(peer => {
+                if (peer !== user) {
+                    peer.send({
+                        type: 'newPeerProducer',
+                        producerId: producer.id,
+                        kind: data.kind
+                    });
+                }
+            });
+            room.users.forEach(peer => {
+                if (peer !== user) {
+                    user.send({
+                        type: 'producersExist',
+                        producerId: peer.getProducersId(),
+                    })
+                }
+            })
+        } catch (error) {
+            console.log('Error while producing ', error)
+        }
+    }
 
     async consumeMedia(user: User, data: any) {
         const room = this.findRoomForUser(user);
@@ -159,7 +185,6 @@ export class MediaSoupSFU {
             rtpCapabilities: data.rtpCapabilities,
             paused: true
         });
-
         user.addConsumer(consumer.id, consumer);
         user.send({
             type: 'mediaConsumed',
@@ -168,6 +193,19 @@ export class MediaSoupSFU {
             kind: consumer.kind,
             rtpParameters: consumer.rtpParameters
         });
+    }
+
+    async resume(user: User, data: any) {
+        let consumer = user.getConsumer(data.consumerId)
+        if (!consumer) {
+            console.error('Consumer not found:', data.consumerId);
+            return;
+        }
+        try {
+            consumer.resume()
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     private findRoomForUser(user: User): Room | undefined {

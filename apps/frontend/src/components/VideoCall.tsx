@@ -4,16 +4,13 @@ import * as mediasoup from 'mediasoup-client';
 import { useParams } from "react-router";
 
 
-
 export const VideoCall = () => {
     const params = useParams();
     const [micOn, setMicOn] = useState(false);
     const [cameraOn, setCameraOn] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
-    const [isConnected, setIsConnected] = useState(false);
-    const [consumingTransports, setConsumingTransports] = useState<string[]>([]);
 
-    const stream = useRef<MediaStream | null>(null);
+    const localStream = useRef<MediaStream | null>(null);
     const remoteStream = useRef<MediaStream | null>(null);
 
     const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -22,8 +19,6 @@ export const VideoCall = () => {
     const deviceRef = useRef<mediasoup.Device | undefined>(undefined)
     const sendTransportRef = useRef<mediasoup.types.Transport<mediasoup.types.AppData> | undefined>(undefined);
     const receiveTransportRef = useRef<mediasoup.types.Transport<mediasoup.types.AppData> | undefined>(undefined);
-    const audioProducerRef = useRef<mediasoup.types.Producer | undefined>()
-    const videoProducerRef = useRef<mediasoup.types.Producer | undefined>()
 
 
     useEffect(() => {
@@ -46,17 +41,16 @@ export const VideoCall = () => {
             // Todo, attempt to reconnect here
         };
         return () => {
-            if (stream) {
-                stream.current?.getTracks().forEach((track) => track.stop());
+            if (localStream) {
+                localStream.current?.getTracks().forEach((track) => track.stop());
             }
         };
     }, [])
 
-
     const startCamera = async () => {
         try {
-            const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-            stream.current = mediaStream
+            const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            localStream.current = mediaStream
             if (localVideoRef.current) {
                 localVideoRef.current!.srcObject = mediaStream;
             }
@@ -79,21 +73,20 @@ export const VideoCall = () => {
             case 'roomJoined':
                 deviceRef.current = new mediasoup.Device();
                 await deviceRef.current?.load({ routerRtpCapabilities: message.rtpCapabilities });
-                createSendTransport()
+                requestSendTransport()
+                requestReceiveTransport()
                 break;
 
-            case 'transportCreated':
-                await handleTransportCreated(message);
+            case 'sendTransportCreated':
+                createSendTransport(message)
                 break;
 
-            case 'transportConnected':
-                await startProducing(message);
+            case 'receiveTransportCreated':
+                createReceiveTransport(message)
                 break;
 
-            case 'mediaProduced':
-                if (message.producersExists) {
-                    consumeProducer(message);
-                }
+            case 'producersExist':
+                // Todo handle all the existing producers
                 break;
 
             case 'newPeerProducer':
@@ -106,119 +99,86 @@ export const VideoCall = () => {
         }
     };
 
-    const createSendTransport = async () => {
+    const requestSendTransport = async () => {
         wsRef.current?.send(JSON.stringify({
-            type: 'createTransport',
-            direction: 'send'
-        }));
-        wsRef.current?.send(JSON.stringify({
-            type: 'createTransport',
-            direction: 'receive'
+            type: 'requestSendTransport'
         }));
     }
 
-    const handleTransportCreated = async (message: any) => {
-        const { direction, transportOptions } = message;
+    const requestReceiveTransport = async () => {
+        wsRef.current?.send(JSON.stringify({
+            type: 'requestReceiveTransport'
+        }));
+    }
 
-        if (direction === 'send') {
-            sendTransportRef.current = deviceRef.current?.createSendTransport(transportOptions);
+    const createSendTransport = async (message: any) => {
+        const { transportOptions } = message;
 
-            sendTransportRef.current?.on('connect', async ({ dtlsParameters }, callback) => {
+        sendTransportRef.current = deviceRef.current?.createSendTransport(transportOptions);
+        if (!sendTransportRef.current) return console.log('send transport is not created')
+        sendTransportRef.current.on('connect', async ({ dtlsParameters }, callback) => {
+            try {
                 wsRef.current?.send(JSON.stringify({
-                    type: 'connectTransport',
-                    transportId: transportOptions.id,
+                    type: 'connectProducerTransport',
+                    transportId: sendTransportRef.current?.id,
                     dtlsParameters
                 }));
                 callback();
-            });
-
-            sendTransportRef.current?.on('produce', async ({ kind, rtpParameters }, callback) => {
+            } catch (error) {
+                console.log('Error while connecting ', error)
+            }
+        });
+        sendTransportRef.current.on('produce', async ({ kind, rtpParameters }, callback) => {
+            try {
                 wsRef.current?.send(JSON.stringify({
                     type: 'produceMedia',
-                    transportId: transportOptions.id,
+                    transportId: sendTransportRef.current?.id,
                     kind,
                     rtpParameters
                 }));
-                callback({ id: 'temp-producer-id' });
-            });
-
-            const videoTrack = stream.current?.getVideoTracks()[0]
-            const audioTrack = stream.current?.getAudioTracks()[0]
-
-            const videoTrackParams = { track: videoTrack };
-            const audioTrackParams = { track: audioTrack };
-            await sendTransportRef.current?.produce(videoTrackParams);
-            // audioProducerRef.current = await sendTransportRef.current?.produce(audioTrackParams);
-
-            audioProducerRef.current?.on('trackended', () => {
-                console.log('audio track ended')
-
-                // close audio track
-            })
-
-            audioProducerRef.current?.on('transportclose', () => {
-                console.log('audio transport ended')
-
-                // close audio track
-            })
-
-            videoProducerRef.current?.on('trackended', () => {
-                console.log('video track ended')
-
-                // close video track
-            })
-
-            videoProducerRef.current?.on('transportclose', () => {
-                console.log('video transport ended')
-
-                // close video track
-            })
-        } else {
-            receiveTransportRef.current = deviceRef.current?.createRecvTransport(transportOptions);
-
-            receiveTransportRef.current?.on('connect', async ({ dtlsParameters }, callback) => {
-                if (isConnected) return
-                wsRef.current?.send(JSON.stringify({
-                    type: 'connectTransport',
-                    transportId: transportOptions.id,
-                    dtlsParameters
-                }));
-                callback();
-            });
-        }
-    };
-
-    const startProducing = async (message: any) => {
-        try {
-            // const userStream = await navigator.mediaDevices.getUserMedia({
-            //     video: true,
-            //     audio: true
-            // });
-
-            // stream.current = userStream
-            console.log('insdie tstart producing ', message);
-
-            const videoTrack = stream.current?.getVideoTracks()[0];
-            const audioTrack = stream.current?.getAudioTracks()[0];
-
-            if (sendTransportRef.current) {
-                await sendTransportRef.current.produce({ track: videoTrack });
-                await sendTransportRef.current.produce({ track: audioTrack });
+                // callback({ id: transportOptions.id });
+            } catch (error) {
+                console.log('Error while producing ', error)
             }
-            setIsConnected(true)
-        } catch (error) {
-            console.error('Error producing media:', error);
+        });
+
+        if (localStream.current) {
+            const videoTrack = localStream.current.getVideoTracks()[0];
+            const audioTrack = localStream.current.getAudioTracks()[0];
+
+            if (videoTrack) {
+                try {
+                    console.log('producing the video track')
+                    await sendTransportRef.current.produce({ track: videoTrack });
+                    console.log('video track produced');
+                } catch (error) {
+                    console.error('Error producing video track:', error);
+                }
+            }
+            if (audioTrack) {
+                await sendTransportRef.current.produce({ track: audioTrack });
+                console.log('audio track produced')
+            }
         }
-    };
+    }
+
+    const createReceiveTransport = async (message: any) => {
+        const { transportOptions } = message;
+        receiveTransportRef.current = deviceRef.current?.createRecvTransport(transportOptions);
+        if (!receiveTransportRef.current) return console.log('Receive transport is not created')
+        receiveTransportRef.current.on('connect', async ({ dtlsParameters }, callback) => {
+            wsRef.current?.send(JSON.stringify({
+                type: 'connectReceiveTransport',
+                transportId: receiveTransportRef.current?.id,
+                dtlsParameters
+            }));
+            callback();
+        });
+    }
 
     const consumeProducer = async (message: any) => {
-        setConsumingTransports(message.producerId)
-        if (!receiveTransportRef) {
-            wsRef.current?.send(JSON.stringify({
-                type: 'createTransport',
-                direction: 'receive'
-            }));
-            return
+        if (!receiveTransportRef.current) {
+            return console.log('No receive transport ref is present ');
         }
 
         wsRef.current?.send(JSON.stringify({
@@ -244,19 +204,25 @@ export const VideoCall = () => {
         }
         const track = consumer.track;
         if (kind === 'audio') {
-            const audio = document.createElement('audio');
-            audio.srcObject = new MediaStream([track]);
-            audio.autoplay = true;
+            // const audio = document.createElement('audio');
+            // audio.srcObject = new MediaStream([track]);
+            // audio.autoplay = true;
         } else if (kind === 'video') {
             if (remoteVideoRef.current) {
+                console.log('state is', consumer.kind, consumer.paused, consumer.track.readyState)
                 remoteVideoRef.current!.srcObject = new MediaStream([track]);
+                remoteVideoRef.current.play().catch(error => console.error("Video play error:", error));
             }
+            wsRef.current?.send(JSON.stringify({
+                type: 'resume',
+                consumerId
+            }))
         }
     };
 
     const toggleCamera = async () => {
-        if (stream.current) {
-            const videoTracks = stream.current.getVideoTracks();
+        if (localStream.current) {
+            const videoTracks = localStream.current.getVideoTracks();
             videoTracks.forEach((track) => {
                 track.enabled = !cameraOn;
             });
@@ -265,8 +231,8 @@ export const VideoCall = () => {
     }
 
     const toggleMic = async () => {
-        if (stream.current) {
-            const audioTracks = stream.current.getAudioTracks();
+        if (localStream.current) {
+            const audioTracks = localStream.current.getAudioTracks();
             audioTracks.forEach(track => {
                 track.enabled = !track.enabled;
             });
@@ -312,8 +278,8 @@ export const VideoCall = () => {
 
     return (
         <>
-            {stream && <div className="fixed left-0 bottom-12 bg-white">
-                <video className="w-40" ref={localVideoRef} autoPlay playsInline />
+            {localStream && <div className="fixed left-0 bottom-12 bg-white">
+                <video className="w-40" ref={localVideoRef} muted autoPlay playsInline />
             </div>}
             {remoteStream && <div className="fixed top-10 left-12 bg-white">
                 <video className="w-40" ref={remoteVideoRef} autoPlay playsInline />
