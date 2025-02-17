@@ -76,8 +76,7 @@ export class MediaSoupSFU {
             preferUdp: true
         });
         user.addTransport(transport.id, transport);
-        console.log('ice candidates , ', transport.iceCandidates);
-        
+
         user.send({
             type: 'sendTransportCreated',
             transportOptions: {
@@ -162,7 +161,7 @@ export class MediaSoupSFU {
                 }
             })
         } catch (error) {
-            console.log('Error while producing ', error)
+            console.error('Error while producing ', error)
         }
     }
 
@@ -204,7 +203,7 @@ export class MediaSoupSFU {
         try {
             consumer.resume()
         } catch (error) {
-            console.log(error)
+            console.error(error)
         }
     }
 
@@ -215,5 +214,23 @@ export class MediaSoupSFU {
             }
         }
         return undefined;
+    }
+
+    async removeUserFromRoom(user: User) {
+        const room = this.findRoomForUser(user);
+        if (!room) return
+        room.users.delete(user);
+
+        room.users.forEach(peer => {
+            peer.send({ type: 'userLeft', userId: user.id });
+        });
+        if (room.users.size === 0) {
+            for (const [roomId, r] of this.rooms.entries()) {
+                if (r === room) {
+                    this.rooms.delete(roomId);
+                    break;
+                }
+            }
+        }
     }
 }

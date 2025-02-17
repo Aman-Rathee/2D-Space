@@ -86,11 +86,13 @@ export const VideoCall = () => {
                 break;
 
             case 'producersExist':
-                // Todo handle all the existing producers
+                message.producerId.map((id: string) => {
+                    consumeProducer(id)
+                })
                 break;
 
             case 'newPeerProducer':
-                consumeProducer(message)
+                consumeProducer(message.producerId)
                 break;
 
             case 'mediaConsumed':
@@ -176,15 +178,15 @@ export const VideoCall = () => {
         });
     }
 
-    const consumeProducer = async (message: any) => {
+    const consumeProducer = async (producerId: string) => {
         if (!receiveTransportRef.current) {
             return console.log('No receive transport ref is present ');
         }
-
+        console.log('indie the consumeproducer', producerId)
         wsRef.current?.send(JSON.stringify({
             type: 'consumeMedia',
             transportId: receiveTransportRef.current?.id,
-            producerId: message.producerId,
+            producerId: producerId,
             rtpCapabilities: deviceRef.current?.rtpCapabilities
         }));
     };

@@ -13,7 +13,8 @@ async function main() {
         const user = new User(ws);
 
         ws.on('close', () => {
-            console.log('Client disconnected');
+            user.cleanup();
+            mediaSoupSFU.removeUserFromRoom(user);
         });
     });
 }
