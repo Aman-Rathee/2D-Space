@@ -9,12 +9,10 @@ export const VideoCall = () => {
     const [micOn, setMicOn] = useState(false);
     const [cameraOn, setCameraOn] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
+    const [remoteStreams, setRemoteStreams] = useState<{ id: string; stream: MediaStream }[]>([]);
 
     const localStream = useRef<MediaStream | null>(null);
-    const remoteStream = useRef<MediaStream | null>(null);
-
     const localVideoRef = useRef<HTMLVideoElement>(null);
-    const remoteVideoRef = useRef<HTMLVideoElement>(null);
     const wsRef = useRef<WebSocket | null>(null)
     const deviceRef = useRef<mediasoup.Device | undefined>(undefined)
     const sendTransportRef = useRef<mediasoup.types.Transport<mediasoup.types.AppData> | undefined>(undefined);
@@ -57,9 +55,7 @@ export const VideoCall = () => {
             if (wsRef.current?.readyState === WebSocket.OPEN) {
                 wsRef.current.send(JSON.stringify({
                     type: 'joinRoom',
-                    payload: {
-                        roomId: params.id,
-                    }
+                    roomId: params.id
                 }));
             }
         } catch (error) {
@@ -206,15 +202,21 @@ export const VideoCall = () => {
         }
         const track = consumer.track;
         if (kind === 'audio') {
+            const audioStream = new MediaStream([track]);
+            const audio = new Audio();
+            audio.srcObject = audioStream;
+            audio.autoplay = true;
             // const audio = document.createElement('audio');
             // audio.srcObject = new MediaStream([track]);
             // audio.autoplay = true;
         } else if (kind === 'video') {
-            if (remoteVideoRef.current) {
-                console.log('state is', consumer.kind, consumer.paused, consumer.track.readyState)
-                remoteVideoRef.current!.srcObject = new MediaStream([track]);
-                remoteVideoRef.current.play().catch(error => console.error("Video play error:", error));
-            }
+            const newStream = new MediaStream([track]);
+            setRemoteStreams(prev => {
+                const exists = prev.some(s => s.id === producerId);
+                if (exists) return prev;
+
+                return [...prev, { id: producerId, stream: newStream }];
+            });
             wsRef.current?.send(JSON.stringify({
                 type: 'resume',
                 consumerId
@@ -280,11 +282,15 @@ export const VideoCall = () => {
 
     return (
         <>
+            <div className="fixed top-4 left-4 grid grid-cols-3 lg:grid-cols-4 gap-2">
+                {remoteStreams.map((remoteStream) => (
+                    <div key={remoteStream.id} >
+                        <RemoteVideo stream={remoteStream.stream} />
+                    </div>
+                ))}
+            </div>
             {localStream && <div className="fixed left-0 bottom-12 bg-white">
                 <video className="w-40" ref={localVideoRef} muted autoPlay playsInline />
-            </div>}
-            {remoteStream && <div className="fixed top-10 left-12 bg-white">
-                <video className="w-40" ref={remoteVideoRef} autoPlay playsInline />
             </div>}
             <div className="fixed bottom-0 left-0 right-0 border-t border-slate-700 bg-slate-900 text-white">
                 <div className="px-4 py-1">
@@ -302,3 +308,18 @@ export const VideoCall = () => {
         </>
     )
 }
+
+
+const RemoteVideo = ({ stream }: { stream: MediaStream }) => {
+    const videoRef = useRef<HTMLVideoElement>(null);
+
+    useEffect(() => {
+        if (videoRef.current) {
+            videoRef.current.srcObject = stream;
+        }
+    }, [stream]);
+
+    return (
+        <video ref={videoRef} autoPlay playsInline className="w-32 rounded-lg" />
+    );
+};
