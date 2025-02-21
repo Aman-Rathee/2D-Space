@@ -36,12 +36,15 @@ export const VideoCall = () => {
 
         wsRef.current.onclose = () => {
             console.log('WebSocket connection closed');
+            setRemoteStreams([]);
             // Todo, attempt to reconnect here
         };
         return () => {
+            wsRef.current?.close();
             if (localStream) {
                 localStream.current?.getTracks().forEach((track) => track.stop());
             }
+            setRemoteStreams([]);
         };
     }, [])
 
@@ -64,7 +67,6 @@ export const VideoCall = () => {
     };
 
     const handleServerMessage = async (message: any) => {
-        console.log('Received message:', message);
         switch (message.type) {
             case 'roomJoined':
                 deviceRef.current = new mediasoup.Device();
@@ -93,6 +95,12 @@ export const VideoCall = () => {
 
             case 'mediaConsumed':
                 handleMediaConsumed(message);
+                break;
+
+            case 'userLeft':
+                message.producersId.map((id: string) => {
+                    removePeerVideo(id)
+                })
                 break;
         }
     };
@@ -224,6 +232,11 @@ export const VideoCall = () => {
         }
     };
 
+    const removePeerVideo = (producerId: string) => {
+        console.log('remote stream ', remoteStreams)
+        setRemoteStreams(prevStreams => prevStreams.filter(stream => stream.id !== producerId));
+    };
+
     const toggleCamera = async () => {
         if (localStream.current) {
             const videoTracks = localStream.current.getVideoTracks();
@@ -282,15 +295,15 @@ export const VideoCall = () => {
 
     return (
         <>
-            <div className="fixed top-4 left-4 grid grid-cols-3 lg:grid-cols-4 gap-2">
+            <div className="fixed top-3 left-3 grid grid-cols-3 lg:grid-cols-4 gap-2">
                 {remoteStreams.map((remoteStream) => (
                     <div key={remoteStream.id} >
                         <RemoteVideo stream={remoteStream.stream} />
                     </div>
                 ))}
             </div>
-            {localStream && <div className="fixed left-0 bottom-12 bg-white">
-                <video className="w-40" ref={localVideoRef} muted autoPlay playsInline />
+            {localStream && <div className="fixed left-3 bottom-14 z-[1]">
+                <video className="w-32 rounded-lg" ref={localVideoRef} muted autoPlay playsInline />
             </div>}
             <div className="fixed bottom-0 left-0 right-0 border-t border-slate-700 bg-slate-900 text-white">
                 <div className="px-4 py-1">

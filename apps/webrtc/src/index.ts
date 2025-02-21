@@ -13,8 +13,8 @@ async function main() {
         const user = new User(ws);
 
         ws.on('close', () => {
-            user.cleanup();
             mediaSoupSFU.removeUserFromRoom(user);
+            user.cleanup();
         });
     });
 }

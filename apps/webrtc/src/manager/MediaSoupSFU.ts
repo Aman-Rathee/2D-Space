@@ -220,9 +220,9 @@ export class MediaSoupSFU {
         const room = this.findRoomForUser(user);
         if (!room) return
         room.users.delete(user);
-
+        let producersId = user.getProducersId()
         room.users.forEach(peer => {
-            peer.send({ type: 'userLeft', userId: user.id });
+            peer.send({ type: 'userLeft', producersId });
         });
         if (room.users.size === 0) {
             for (const [roomId, r] of this.rooms.entries()) {
