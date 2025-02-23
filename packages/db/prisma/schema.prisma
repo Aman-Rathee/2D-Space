@@ -26,7 +26,7 @@ model Space {
   height    Int
   thumbnail String?
   creatorId String
-  creator     User    @relation(fields: [creatorId], references: [id])
+  creator   User    @relation(fields: [creatorId], references: [id])
   elements  spaceElements[]
 }
 
@@ -36,7 +36,7 @@ model spaceElements {
   spaceId   String
   x         Int
   y         Int
-  space     Space  @relation(fields: [spaceId], references: [id])
+  space     Space  @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   element   Element @relation(fields: [elementId], references: [id])
 }
 
@@ -51,11 +51,11 @@ model Element {
 }
 
 model Map {
-  id     String  @id @unique @default(cuid())
-  width  Int
-  height Int
-  name   String
-  thumbnail String
+  id          String  @id @unique @default(cuid())
+  width       Int
+  height      Int
+  name        String
+  thumbnail   String
   mapElements MapElements[]
 }
 
