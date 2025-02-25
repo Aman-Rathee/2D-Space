@@ -34,8 +34,7 @@ const JoinSpace = () => {
     };
 
     return (
-        <div className="min-h-screen overflow-hidden relative flex bg-slate-100">
-
+        <div className="min-h-[calc(100vh-60px)] overflow-hidden relative flex bg-slate-100">
             <div className="w-full max-w-2xl mx-auto p-8 relative">
                 <div className="backdrop-blur-lg bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-shadow p-8">
                     <div className="flex items-center justify-center gap-3 mb-7">

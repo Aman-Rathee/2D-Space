@@ -7,7 +7,7 @@ const Home = () => {
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,220,100,1),transparent_50%)]" />
             <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(100,200,255,1),transparent_50%)]" />
 
-            <div className="max-w-7xl mx-auto px-4 pt-24">
+            <div className="max-w-7xl mx-auto px-4 py-24">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div className="relative z-10">
                         <div className="inline-flex items-center space-x-2 bg-black/5 rounded-full px-4 py-2 mb-6">
