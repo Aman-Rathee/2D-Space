@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Plus, ArrowRight } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import axios from 'axios';
 import { backendUrl } from './Signup';
 
@@ -37,6 +37,7 @@ const formFields = [
 ];
 
 const CreateSpace = () => {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
 
@@ -53,6 +54,9 @@ const CreateSpace = () => {
                 }
             })
             console.log(response);
+            if (response.status === 200) {
+                navigate(`/spaces`)
+            }
         } catch (error) {
             console.error("Error:", error);
         } finally {
@@ -105,9 +109,9 @@ const CreateSpace = () => {
                         </button>
                     </form>
                     <p className="mt-8 text-center text-zinc-700">
-                        Join an existing?{' '}
-                        <Link to="/join" className="text-orange-500 font-semibold hover:text-orange-600">
-                            Join Space
+                        Launch an existing?{' '}
+                        <Link to="/spaces" className="text-orange-500 font-semibold hover:text-orange-600">
+                            Launch Space
                         </Link>
                     </p>
                 </div>
