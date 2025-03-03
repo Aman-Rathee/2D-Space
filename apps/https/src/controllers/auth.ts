@@ -20,6 +20,7 @@ export const signup = async (req: Request, res: Response) => {
     const user = await client.user.create({
       data: {
         email: parsedData.data.email,
+        userName: parsedData.data.userName,
         password: hashedPassword,
         role: parsedData.data.type === "admin" ? "Admin" : "User",
       }

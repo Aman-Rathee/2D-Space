@@ -13,10 +13,11 @@ model User {
   id       String  @id @unique @default(cuid())
   email    String  @unique
   password String
+  userName String  @unique
   avatarId String?
   role     Role
   spaces   Space[]
-  avatar    Avatar? @relation(fields: [avatarId], references: [id])
+  avatar   Avatar? @relation(fields: [avatarId], references: [id])
 }
 
 model Space {
