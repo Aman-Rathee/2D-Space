@@ -51,6 +51,9 @@ export class User {
                     case "resume":
                         await this.mediaSoupSFU.resume(this, parsedData);
                         break;
+                    case "message":
+                        await this.mediaSoupSFU.broadCastMessage(this, parsedData.message);
+                        break;
                     default:
                         console.warn('Unknown message type:', parsedData.type);
                 }

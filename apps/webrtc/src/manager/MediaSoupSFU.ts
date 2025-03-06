@@ -207,6 +207,20 @@ export class MediaSoupSFU {
         }
     }
 
+    async broadCastMessage(user: User, msg: string) {
+        const room = this.findRoomForUser(user);
+        if (!room) return
+        room.users.forEach(peer => {
+            if (peer !== user) {
+                peer.send({
+                    type: 'message',
+                    user: user.id,
+                    text: msg
+                });
+            }
+        });
+    }
+
     private findRoomForUser(user: User): Room | undefined {
         for (const room of this.rooms.values()) {
             if (room.users.has(user)) {
