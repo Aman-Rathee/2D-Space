@@ -11,6 +11,7 @@ export const VideoCall = () => {
     const [cameraOn, setCameraOn] = useState(false);
     const [isSharing, setIsSharing] = useState(false);
     const [remoteStreams, setRemoteStreams] = useState<{ id: string; stream: MediaStream }[]>([]);
+    const [isChatOpen, setIsChatOpen] = useState(false)
 
     const localStream = useRef<MediaStream | null>(null);
     const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -277,19 +278,20 @@ export const VideoCall = () => {
             icon: Share,
             label: 'Screen Share',
             onClick: () => setIsSharing(!isSharing),
-            isActive: true,
+            isActive: false,
         },
         {
             icon: MessageSquare,
             label: 'Chat',
-            onClick: () => console.log('Open chat'),
-            isActive: true,
+            onClick: () => setIsChatOpen(prev => !prev),
+            isActive: isChatOpen,
+            color: 'bg-green-600 hover:bg-green-500'
         },
         {
             icon: Settings,
             label: 'Settings',
             onClick: () => console.log('Open settings'),
-            isActive: true,
+            isActive: false,
         },
     ];
 
@@ -311,7 +313,7 @@ export const VideoCall = () => {
                     <div className="flex items-center justify-between">
                         <div className="flex-1 flex items-center justify-center gap-2">
                             {controls.map(({ icon: Icon, label, onClick, isActive, color }) => (
-                                <button key={label} onClick={onClick} className={`flex flex-col items-center p-2 rounded-full transition-colors ${isActive ? 'bg-slate-700 hover:bg-slate-600' : color}`}>
+                                <button key={label} onClick={onClick} className={`flex flex-col items-center p-2 rounded-full transition-colors ${isActive ? color : 'bg-slate-700 hover:bg-slate-600'}`}>
                                     <Icon className="w-6 h-6" />
                                 </button>
                             ))}
@@ -319,7 +321,7 @@ export const VideoCall = () => {
                     </div>
                 </div>
             </div>
-            {wsRef.current && < Chat ws={wsRef.current} />}
+            {wsRef.current && < Chat ws={wsRef.current} className={isChatOpen ? 'fixed' : "hidden"} setIsChatOpen={setIsChatOpen} />}
         </>
     )
 }
