@@ -94,7 +94,8 @@ const MySpaces = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {/* Todo - add skeleton when loading */}
+                {!loading && <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredSpaces.map(space => (
                         <div key={space.id} className="bg-white rounded-xl shadow-sm hover:shadow-2xl transition-shadow p-6 border border-gray-100">
                             <div className="flex justify-between items-start mb-4">
@@ -133,7 +134,7 @@ const MySpaces = () => {
                             </div>
                         </div>
                     ))}
-                </div>
+                </div>}
             </div>
             <AlertModal
                 isOpen={isModalOpen}

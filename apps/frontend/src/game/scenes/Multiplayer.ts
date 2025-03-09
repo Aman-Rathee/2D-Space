@@ -176,6 +176,7 @@ export default class MultiplayerGame extends Scene {
     }
 
     private spawnPlayer(x: number, y: number) {
+        console.log('x and y ', x, y)
         const spawnPointsLayer = this.map.getObjectLayer('spawn-point');
         const spawnPoints = spawnPointsLayer!.objects;
         const randomSpawnPoint = Phaser.Math.RND.pick(spawnPoints);

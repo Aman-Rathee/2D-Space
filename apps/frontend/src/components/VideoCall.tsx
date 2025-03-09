@@ -144,7 +144,7 @@ export const VideoCall = () => {
                     kind,
                     rtpParameters
                 }));
-                // callback({ id: transportOptions.id });
+                callback({ id: transportOptions.id });
             } catch (error) {
                 console.log('Error while producing ', error)
             }
