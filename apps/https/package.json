@@ -4,9 +4,9 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npx esbuild src/index.ts --bundle --outfile=dist/index.js --platform=node --tsconfig=tsconfig.json",
+    "build": "tsup",
     "start": "node dist/index.js",
-    "dev": "npm run build && npm run start"
+    "dev": "tsup --watch --onSuccess \"node dist/index.js\""
   },
   "keywords": [],
   "author": "",
@@ -22,10 +22,11 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
     "@types/bcrypt": "^5.0.2",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/jsonwebtoken": "^9.0.7",
-    "esbuild": "^0.24.2"
+    "tsup": "^8.4.0"
   }
 }
