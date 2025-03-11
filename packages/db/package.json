@@ -5,16 +5,16 @@
     "./client": "./src/index.ts"
   },
   "scripts": {
-    "build": "tsc -b"
+    "generate": "npx prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^6.1.0",
-    "typescript": "^5.7.2"
+    "@prisma/client": "^6.1.0"
   },
   "devDependencies": {
-    "prisma": "^6.1.0"
+    "prisma": "^6.1.0",
+    "typescript": "^5.7.2"
   }
 }

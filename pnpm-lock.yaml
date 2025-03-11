@@ -198,13 +198,13 @@ importers:
       '@prisma/client':
         specifier: ^6.1.0
         version: 6.1.0(prisma@6.1.0)
-      typescript:
-        specifier: ^5.7.2
-        version: 5.7.2
     devDependencies:
       prisma:
         specifier: ^6.1.0
         version: 6.1.0
+      typescript:
+        specifier: ^5.7.2
+        version: 5.7.2
 
   packages/eslint-config:
     devDependencies:
@@ -5084,10 +5084,6 @@ snapshots:
     optionalDependencies:
       supports-color: 9.4.0
 
-  debug@4.4.0:
-    dependencies:
-      ms: 2.1.3
-
   debug@4.4.0(supports-color@9.4.0):
     dependencies:
       ms: 2.1.3
@@ -7215,7 +7211,7 @@ snapshots:
       cac: 6.7.14
       chokidar: 4.0.3
       consola: 3.4.0
-      debug: 4.4.0
+      debug: 4.4.0(supports-color@9.4.0)
       esbuild: 0.25.1
       joycon: 3.1.1
       picocolors: 1.1.1
