@@ -7,8 +7,8 @@ import { Chat } from "./Chat";
 
 export const VideoCall = () => {
     const params = useParams();
-    const [micOn, setMicOn] = useState(false);
-    const [cameraOn, setCameraOn] = useState(false);
+    const [micOn, setMicOn] = useState(true);
+    const [cameraOn, setCameraOn] = useState(true);
     const [isSharing, setIsSharing] = useState(false);
     const [remoteStreams, setRemoteStreams] = useState<{ id: string; stream: MediaStream }[]>([]);
     const [isChatOpen, setIsChatOpen] = useState(false)
@@ -19,6 +19,8 @@ export const VideoCall = () => {
     const deviceRef = useRef<mediasoup.Device | undefined>(undefined)
     const sendTransportRef = useRef<mediasoup.types.Transport<mediasoup.types.AppData> | undefined>(undefined);
     const receiveTransportRef = useRef<mediasoup.types.Transport<mediasoup.types.AppData> | undefined>(undefined);
+    const videoProducerRef = useRef<mediasoup.types.Producer | null>(null);
+    const audioProducerRef = useRef<mediasoup.types.Producer | null>(null);
 
 
     useEffect(() => {
@@ -52,11 +54,6 @@ export const VideoCall = () => {
 
     const startCamera = async () => {
         try {
-            const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            localStream.current = mediaStream
-            if (localVideoRef.current) {
-                localVideoRef.current!.srcObject = mediaStream;
-            }
             if (wsRef.current?.readyState === WebSocket.OPEN) {
                 wsRef.current.send(JSON.stringify({
                     type: 'joinRoom',
@@ -123,7 +120,7 @@ export const VideoCall = () => {
         const { transportOptions } = message;
 
         sendTransportRef.current = deviceRef.current?.createSendTransport(transportOptions);
-        if (!sendTransportRef.current) return console.log('send transport is not created')
+        if (!sendTransportRef.current) return console.warn('send transport is not created')
         sendTransportRef.current.on('connect', async ({ dtlsParameters }, callback) => {
             try {
                 wsRef.current?.send(JSON.stringify({
@@ -133,7 +130,7 @@ export const VideoCall = () => {
                 }));
                 callback();
             } catch (error) {
-                console.log('Error while connecting ', error)
+                console.error('Error while connecting ', error)
             }
         });
         sendTransportRef.current.on('produce', async ({ kind, rtpParameters }, callback) => {
@@ -146,26 +143,42 @@ export const VideoCall = () => {
                 }));
                 callback({ id: transportOptions.id });
             } catch (error) {
-                console.log('Error while producing ', error)
+                console.error('Error while producing ', error)
             }
         });
 
+        try {
+            const mediaStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            localStream.current = mediaStream
+            if (localVideoRef.current) {
+                localVideoRef.current!.srcObject = mediaStream;
+            }
+        } catch (error) {
+            if (error === 'NotAllowedError: Permission denied') {
+                console.warn('Camera Permission denied')
+            } else {
+                console.error('Error while getting user media', error)
+            }
+        }
         if (localStream.current) {
             const videoTrack = localStream.current.getVideoTracks()[0];
             const audioTrack = localStream.current.getAudioTracks()[0];
 
-            if (videoTrack) {
-                try {
-                    console.log('producing the video track')
-                    await sendTransportRef.current.produce({ track: videoTrack });
-                    console.log('video track produced');
-                } catch (error) {
-                    console.error('Error producing video track:', error);
+            if (sendTransportRef.current) {
+                if (videoTrack) {
+                    try {
+                        videoProducerRef.current = await sendTransportRef.current.produce({ track: videoTrack });
+                    } catch (error) {
+                        console.error('Error producing video track:', error);
+                    }
                 }
-            }
-            if (audioTrack) {
-                await sendTransportRef.current.produce({ track: audioTrack });
-                console.log('audio track produced')
+                if (audioTrack) {
+                    try {
+                        audioProducerRef.current = await sendTransportRef.current.produce({ track: audioTrack });
+                    } catch (error) {
+                        console.error('Error producing audio track:', error);
+                    }
+                }
             }
         }
     }
@@ -173,7 +186,7 @@ export const VideoCall = () => {
     const createReceiveTransport = async (message: any) => {
         const { transportOptions } = message;
         receiveTransportRef.current = deviceRef.current?.createRecvTransport(transportOptions);
-        if (!receiveTransportRef.current) return console.log('Receive transport is not created')
+        if (!receiveTransportRef.current) return console.warn('Receive transport is not created')
         receiveTransportRef.current.on('connect', async ({ dtlsParameters }, callback) => {
             wsRef.current?.send(JSON.stringify({
                 type: 'connectReceiveTransport',
@@ -186,9 +199,8 @@ export const VideoCall = () => {
 
     const consumeProducer = async (producerId: string) => {
         if (!receiveTransportRef.current) {
-            return console.log('No receive transport ref is present ');
+            return console.warn('No receive transport ref is present ');
         }
-        console.log('indie the consumeproducer', producerId)
         wsRef.current?.send(JSON.stringify({
             type: 'consumeMedia',
             transportId: receiveTransportRef.current?.id,
@@ -212,20 +224,24 @@ export const VideoCall = () => {
         }
         const track = consumer.track;
         if (kind === 'audio') {
-            const audioStream = new MediaStream([track]);
-            const audio = new Audio();
-            audio.srcObject = audioStream;
-            audio.autoplay = true;
-            // const audio = document.createElement('audio');
-            // audio.srcObject = new MediaStream([track]);
-            // audio.autoplay = true;
-        } else if (kind === 'video') {
-            const newStream = new MediaStream([track]);
+            const newAudioStream = new MediaStream([track]);
             setRemoteStreams(prev => {
                 const exists = prev.some(s => s.id === producerId);
-                if (exists) return prev;
+                if (exists) return prev
 
-                return [...prev, { id: producerId, stream: newStream }];
+                return [...prev, { id: producerId, stream: newAudioStream }];
+            });
+            wsRef.current?.send(JSON.stringify({
+                type: 'resume',
+                consumerId
+            }))
+        } else if (kind === 'video') {
+            const newVideoStream = new MediaStream([track]);
+            setRemoteStreams(prev => {
+                const exists = prev.some(s => s.id === producerId);
+                if (exists) return prev
+
+                return [...prev, { id: producerId, stream: newVideoStream }];
             });
             wsRef.current?.send(JSON.stringify({
                 type: 'resume',
@@ -240,22 +256,51 @@ export const VideoCall = () => {
     };
 
     const toggleCamera = async () => {
-        if (localStream.current) {
-            const videoTracks = localStream.current.getVideoTracks();
-            videoTracks.forEach((track) => {
-                track.enabled = !cameraOn;
-            });
-            setCameraOn(videoTracks[0].enabled)
+        try {
+            if (cameraOn && videoProducerRef.current) {
+                await videoProducerRef.current.pause();
+                const videoTrack = localStream.current?.getVideoTracks()[0];
+                if (videoTrack) videoTrack.stop();
+            } else if (!cameraOn && sendTransportRef.current) {
+                const newStream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const newVideoTrack = newStream.getVideoTracks()[0];
+                localStream.current = newStream;
+                if (localVideoRef.current) {
+                    localVideoRef.current!.srcObject = newStream;
+                }
+                if (videoProducerRef.current) {
+                    await videoProducerRef.current.replaceTrack({ track: newVideoTrack });
+                    await videoProducerRef.current.resume();
+                } else {
+                    videoProducerRef.current = await sendTransportRef.current.produce({ track: newVideoTrack });
+                }
+            }
+            setCameraOn(!cameraOn)
+        } catch (error) {
+            console.error("Error toggling camera:", error);
         }
     }
 
     const toggleMic = async () => {
-        if (localStream.current) {
-            const audioTracks = localStream.current.getAudioTracks();
-            audioTracks.forEach(track => {
-                track.enabled = !track.enabled;
-            });
-            setMicOn(audioTracks[0].enabled)
+        try {
+            if (micOn && audioProducerRef.current) {
+                await audioProducerRef.current.pause();
+                const audioTrack = localStream.current?.getAudioTracks()[0];
+                if (audioTrack) audioTrack.stop();
+                setMicOn(false)
+            } else if (!micOn && sendTransportRef.current) {
+                const newAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                const newAudioTrack = newAudioStream.getAudioTracks()[0];
+                if (audioProducerRef.current) {
+                    await audioProducerRef.current.replaceTrack({ track: newAudioTrack });
+                    await audioProducerRef.current.resume();
+                } else {
+                    audioProducerRef.current = await sendTransportRef.current.produce({ track: newAudioTrack });
+                }
+            }
+            setMicOn(!micOn)
+        } catch (error) {
+            console.error("Error toggling mic:", error);
         }
     }
 
@@ -265,14 +310,14 @@ export const VideoCall = () => {
             label: micOn ? 'Mute' : 'Unmute',
             onClick: () => toggleMic(),
             isActive: micOn,
-            color: 'bg-red-600 hover:bg-red-500'
+            color: 'bg-green-600 hover:bg-green-500'
         },
         {
             icon: cameraOn ? Video : VideoOff,
             label: cameraOn ? 'Stop Video' : 'Start Video',
             onClick: () => toggleCamera(),
             isActive: cameraOn,
-            color: 'bg-red-600 hover:bg-red-500'
+            color: 'bg-green-600 hover:bg-green-500'
         },
         {
             icon: Share,
