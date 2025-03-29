@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import AlertModal from '../components/Model';
 import CreateSpace from './CreateSpace';
 
-interface Space {
+export interface Space {
     id: string;
     name: string;
     dimensions: string;
@@ -149,6 +149,7 @@ const MySpaces = () => {
             <CreateSpace
                 isOpen={isCreateSpaceModalOpen}
                 onClose={() => setIsCreateSpaceModalOpen(false)}
+                setMockSpaces={setMockSpaces}
             />
         </div>
     );

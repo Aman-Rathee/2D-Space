@@ -2,7 +2,7 @@ import { Router } from "express";
 import { addElementToSpace, allSpaces, createSpace, deleteElementFromSpace, deleteSpace, getSpace } from "../controllers/space";
 import { userMiddleware } from "../middlewares/user";
 
-export const spaceRouter = Router();
+export const spaceRouter: Router = Router();
 spaceRouter.use(userMiddleware)
 
 spaceRouter.post('/create', createSpace)

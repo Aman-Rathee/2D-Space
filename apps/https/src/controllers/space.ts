@@ -56,7 +56,7 @@ export const createSpace = async (req: Request, res: Response) => {
       return space;
 
     })
-    res.json({ spaceId: space.id })
+    res.json({ space })
 
   } catch (error) {
     res.status(500).json({

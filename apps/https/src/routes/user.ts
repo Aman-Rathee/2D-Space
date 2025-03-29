@@ -2,7 +2,7 @@ import { Router } from "express";
 import { bulkMetadata, metadata } from "../controllers/user";
 import { userMiddleware } from "../middlewares/user";
 
-export const userRouter = Router();
+export const userRouter: Router = Router();
 userRouter.use(userMiddleware)
 
 userRouter.post('/metadata', metadata)

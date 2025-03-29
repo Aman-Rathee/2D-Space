@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form';
 import { Link } from 'react-router';
 import axios from 'axios';
 import { backendUrl } from './Signup';
+import { Space } from './MySpaces';
 
 interface FormData {
     [key: string]: string
@@ -12,6 +13,7 @@ interface FormData {
 interface CreateSpaceModalProps {
     isOpen: boolean;
     onClose: () => void;
+    setMockSpaces: React.Dispatch<React.SetStateAction<Space[]>>
 }
 
 const formFields = [
@@ -41,9 +43,9 @@ const formFields = [
     }
 ];
 
-const CreateSpace = ({ isOpen, onClose }: CreateSpaceModalProps) => {
+const CreateSpace = ({ isOpen, onClose, setMockSpaces }: CreateSpaceModalProps) => {
     const [isLoading, setIsLoading] = useState(false);
-    const { register, handleSubmit, formState: { errors } } = useForm<FormData>();
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<FormData>();
 
     const onSubmit = async (data: FormData) => {
         setIsLoading(true);
@@ -58,14 +60,15 @@ const CreateSpace = ({ isOpen, onClose }: CreateSpaceModalProps) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             })
-            console.log(response);
             if (response.status === 200) {
                 onClose()
+                setMockSpaces(data => [...data, { id: response.data.space.id, name: response.data.space.name, dimensions: `${response.data.space.width}x${response.data.space.height}`, thumbnail: response.data.space.thumbnail }])
             }
         } catch (error) {
             console.error("Error:", error);
         } finally {
             setIsLoading(false);
+            reset()
         }
     };
 
