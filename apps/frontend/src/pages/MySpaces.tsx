@@ -4,6 +4,7 @@ import { backendUrl } from './Signup';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import AlertModal from '../components/Model';
+import CreateSpace from './CreateSpace';
 
 interface Space {
     id: string;
@@ -17,6 +18,7 @@ const MySpaces = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isCreateSpaceModalOpen, setIsCreateSpaceModalOpen] = useState(false);
     const [selectedSpaceId, setSelectedSpaceId] = useState<string | null>(null);
 
     useEffect(() => {
@@ -75,13 +77,13 @@ const MySpaces = () => {
                         <h1 className="text-3xl font-bold">My Spaces</h1>
                         <p className="text-slate-600 mt-1">Manage and monitor your virtual spaces</p>
                     </div>
-                    <Link
-                        to="/space/create"
+                    <button
+                        onClick={() => setIsCreateSpaceModalOpen(true)}
                         className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-xl hover:opacity-80 transition-opacity"
                     >
                         <Plus className="h-5 w-5" />
                         Create Space
-                    </Link>
+                    </button>
                 </div>
                 <div className="relative mb-8">
                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
@@ -143,6 +145,10 @@ const MySpaces = () => {
                 message="Are you sure you want to delete this Space?"
                 confirmText="Delete"
                 onConfirm={deleteSpace}
+            />
+            <CreateSpace
+                isOpen={isCreateSpaceModalOpen}
+                onClose={() => setIsCreateSpaceModalOpen(false)}
             />
         </div>
     );

@@ -5,7 +5,6 @@ import Footer from "./components/Footer"
 import GameCanvas from "./game/scenes/GameCanvas"
 import SignupPage from "./pages/Signup"
 import LoginPage from "./pages/Login"
-import CreateSpace from "./pages/CreateSpace"
 import MySpaces from "./pages/MySpaces"
 import JoinSpace from "./pages/JoinSpace"
 
@@ -18,7 +17,6 @@ function App() {
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<GameCanvas />} />
-            <Route path="/space/create" element={<CreateSpace />} />
             <Route path="/spaces" element={<MySpaces />} />
             <Route path="/join" element={<JoinSpace />} />
           </Route>

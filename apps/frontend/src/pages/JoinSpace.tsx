@@ -65,8 +65,8 @@ const JoinSpace = () => {
                         </button>
                     </form>
                     <p className="mt-8 text-center text-zinc-700">
-                        Create a new space?{' '}
-                        <Link to="/space/create" className="text-orange-500 font-semibold hover:text-orange-600">
+                        Create your own space?{' '}
+                        <Link to="/spaces" className="text-orange-500 font-semibold hover:text-orange-600">
                             Create Space
                         </Link>
                     </p>
