@@ -3,7 +3,7 @@ import { Link } from 'react-router';
 import { backendUrl } from './Signup';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
-import AlertModal from './Model';
+import AlertModal from '../components/Model';
 
 interface Space {
     id: string;
