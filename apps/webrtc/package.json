@@ -12,12 +12,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "mediasoup": "^3.15.2",
-    "ws": "^8.18.0"
+    "mediasoup": "^3.15.7",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/ws": "^8.5.13",
+    "@types/ws": "^8.18.0",
     "tsup": "^8.4.0"
   }
 }

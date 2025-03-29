@@ -13,14 +13,16 @@
   "license": "ISC",
   "dependencies": {
     "@repo/db": "workspace:*",
+    "bufferutil": "^4.0.9",
     "dotenv": "^16.4.7",
     "jsonwebtoken": "^9.0.2",
-    "ws": "^8.18.0"
+    "utf-8-validate": "^5.0.10",
+    "ws": "^8.18.1"
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "@types/jsonwebtoken": "^9.0.7",
-    "@types/ws": "^8.5.13",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/ws": "^8.18.0",
     "tsup": "^8.4.0"
   }
 }
