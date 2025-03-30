@@ -55,7 +55,7 @@ const Home = () => {
                             <img
                                 id="game-image"
                                 alt="Game"
-                                src="./game.png"
+                                src="./maps/map1/photo.png"
                                 className="w-full h-full object-cover"
                             />
                         </div>
