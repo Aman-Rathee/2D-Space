@@ -5,6 +5,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import AlertModal from '../components/Model';
 import CreateSpace from './CreateSpace';
+import { Skeleton } from '../components/Skeleton';
 
 export interface Space {
     id: string;
@@ -96,10 +97,9 @@ const MySpaces = () => {
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
-                {/* Todo - add skeleton when loading */}
-                {!loading && <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {loading ? <SpaceListSkeleton /> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredSpaces.map(space => (
-                        <div key={space.id} className="bg-white rounded-xl shadow-sm hover:shadow-2xl transition-shadow p-6 border border-gray-100">
+                        <div key={space.id} className="bg-white rounded-xl shadow-sm hover:shadow-2xl transition-shadow p-6 border border-gray-200">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-indigo-100 rounded-lg">
@@ -156,3 +156,34 @@ const MySpaces = () => {
 };
 
 export default MySpaces;
+
+
+
+function SpaceListSkeleton() {
+    return (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-xl shadow-sm transition-shadow p-6 border border-gray-200">
+                    <div className="flex justify-between items-start mb-6">
+                        <Skeleton className="h-7 w-2/5" />
+                        <Skeleton className="h-6 w-9" />
+                    </div>
+                    <div className="space-y-3">
+                        <div className="flex justify-between text-sm">
+                            <Skeleton className="h-4 w-2/4 mb-2" />
+                            <Skeleton className="h-4 w-1/4 mb-2" />
+                        </div>
+                        <div className="flex justify-between text-sm">
+                            <Skeleton className="h-4 w-1/4 mb-2" />
+                            <Skeleton className="h-4 w-3/5 mb-2" />
+                        </div>
+                        <div className="flex justify-between items-center pt-4 border-t">
+                            <Skeleton className="h-6 w-2/6" />
+                            <Skeleton className="h-6 w-1/5" />
+                        </div>
+                    </div>
+                </div>
+            ))}
+        </div>
+    )
+}
