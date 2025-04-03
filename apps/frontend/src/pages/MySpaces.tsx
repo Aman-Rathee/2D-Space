@@ -1,5 +1,5 @@
 import { Plus, Search, Layout, Users, Trash2 } from 'lucide-react';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import { backendUrl } from './Signup';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
@@ -15,6 +15,7 @@ export interface Space {
 }
 
 const MySpaces = () => {
+    const navigate = useNavigate();
     const [mockSpaces, setMockSpaces] = useState<Space[]>([])
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -32,7 +33,13 @@ const MySpaces = () => {
                 });
                 setMockSpaces(response.data.spaces);
             } catch (error) {
-                console.error("Failed to fetch data");
+                if (axios.isAxiosError(error)) {
+                    if (error.status == 401 || error.status == 403) {
+                        localStorage.removeItem('token')
+                        navigate('/login')
+                    }
+                }
+                console.error("Failed to fetch data", error);
             } finally {
                 setLoading(false);
             }
@@ -118,7 +125,7 @@ const MySpaces = () => {
                                     <span className="font-medium">{space.dimensions}</span>
                                 </div>
                                 <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Map ID:</span>
+                                    <span className="text-gray-500">Space ID:</span>
                                     <span className="font-medium">{space.id}</span>
                                 </div>
                                 <div className="flex justify-between items-center pt-4 border-t">

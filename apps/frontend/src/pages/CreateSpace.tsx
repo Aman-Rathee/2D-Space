@@ -79,7 +79,7 @@ const CreateSpace = ({ isOpen, onClose, setMockSpaces }: CreateSpaceModalProps) 
 
     return (
         <div className="fixed inset-0 flex py-3 justify-center">
-            <div className="fixed inset-0 bg-black bg-opacity-60" onClick={() => { !isLoading && onClose }}></div>
+            <div className="fixed inset-0 bg-black bg-opacity-60" onClick={() => { if (!isLoading) onClose() }}></div>
             <div className="w-full max-w-2xl overflow-auto [scrollbar-width:none]">
                 <div className="backdrop-blur-lg bg-orange-200 rounded-2xl shadow-xl p-8">
                     <div className="flex justify-center items-center gap-3 mb-2">
@@ -112,7 +112,7 @@ const CreateSpace = ({ isOpen, onClose, setMockSpaces }: CreateSpaceModalProps) 
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className={`w-full bg-gradient-to-r bg-amber-500 ${!isLoading && 'hover:bg-amber-600'} text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 group transition-opacity ${isLoading && 'bg-amber-700'}`}>
+                            className={`w-full bg-gradient-to-r bg-amber-500 ${!isLoading && 'hover:bg-amber-600'} text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 group transition-opacity ${isLoading && 'bg-amber-700 cursor-not-allowed'}`}>
                             <span>{isLoading ? 'Creating...' : 'Create Space'}</span>
                             {isLoading ?
                                 <Loader className="h-4 w-4 transition-transform animate-spin" />
@@ -122,7 +122,7 @@ const CreateSpace = ({ isOpen, onClose, setMockSpaces }: CreateSpaceModalProps) 
                     </form>
                     <p className="mt-8 text-center text-zinc-700">
                         Launch an existing?{' '}
-                        <span onClick={() => { !isLoading && onClose }} className="text-orange-500 cursor-pointer font-semibold hover:text-orange-600">
+                        <span onClick={() => { if (!isLoading) onClose() }} className="text-orange-500 cursor-pointer font-semibold hover:text-orange-600">
                             Launch Space
                         </span>
                     </p>

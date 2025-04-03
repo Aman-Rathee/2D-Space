@@ -2,7 +2,7 @@ import axios from 'axios';
 import { ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 
 export const backendUrl = 'http://localhost:3001/'
 
@@ -50,6 +50,7 @@ interface FormData {
 }
 
 const SignupPage = () => {
+    const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
     const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -61,7 +62,10 @@ const SignupPage = () => {
                 email: data.email,
                 password: data.password
             })
-            console.log(response);
+            if (response.status == 200) {
+                navigate('/')
+            }
+            localStorage.setItem('token', response.data.token)
         } catch (error) {
             console.error("Error:", error);
         } finally {

@@ -1,7 +1,7 @@
 import { X } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useForm } from "react-hook-form";
-import { cn } from "../lib/utils/cnUtil";
+import { cn } from "../utils/cnUtil";
 
 export const Chat = ({ ws, className, setIsChatOpen }: { ws: WebSocket, className: string, setIsChatOpen: Dispatch<SetStateAction<boolean>> }) => {
     const { register, handleSubmit, reset } = useForm();

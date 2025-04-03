@@ -25,7 +25,8 @@ export const signup = async (req: Request, res: Response) => {
         role: parsedData.data.type === "admin" ? "Admin" : "User",
       }
     })
-    res.status(200).json({ userId: user.id });
+    const token = jwt.sign({ userId: user.id, role: user.role }, JWT_SECRET);
+    res.status(200).json({ token });
 
   } catch (error) {
     res.status(500).json({ message: 'Internal server error' });
@@ -45,12 +46,12 @@ export const login = async (req: Request, res: Response) => {
     })
 
     if (!user) {
-      res.status(404).json({ message: "User not found" });
+      res.status(401).json({ message: "Invalid email or password" });
       return
     }
     const isValid = await compare(parsedData.data.password, user.password)
     if (!isValid) {
-      res.status(401).json({ message: "Invalid password" })
+      res.status(401).json({ message: "Invalid email or password" })
       return
     }
 

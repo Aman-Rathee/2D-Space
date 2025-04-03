@@ -7,6 +7,7 @@ import SignupPage from "./pages/Signup"
 import LoginPage from "./pages/Login"
 import MySpaces from "./pages/MySpaces"
 import JoinSpace from "./pages/JoinSpace"
+import PrivateRoute from "./pages/PrivateRoute "
 
 function App() {
 
@@ -16,13 +17,12 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/about" element={<GameCanvas />} />
             <Route path="/spaces" element={<MySpaces />} />
             <Route path="/join" element={<JoinSpace />} />
           </Route>
           <Route path="/signup" element={<SignupPage />} />
           <Route path="/login" element={<LoginPage />} />
-          <Route path="/space/:id" element={<GameCanvas />} />
+          <Route path="/space/:id" element={<PrivateRoute><GameCanvas /></PrivateRoute>} />
         </Routes>
       </BrowserRouter>
     </>
