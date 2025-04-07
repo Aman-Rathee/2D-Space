@@ -7,7 +7,7 @@ import SignupPage from "./pages/Signup"
 import LoginPage from "./pages/Login"
 import MySpaces from "./pages/MySpaces"
 import JoinSpace from "./pages/JoinSpace"
-import PrivateRoute from "./pages/PrivateRoute "
+import PrivateRoute from "./pages/PrivateRoute"
 
 function App() {
 
