@@ -6,7 +6,9 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "start:frontend": "cd apps/frontend && pnpm dev"
+    "start:frontend": "cd apps/frontend && pnpm dev",
+    "db:generate": "cd packages/db && npx prisma generate",
+    "start:backend": "cd apps/backend && node dist/index.js"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
