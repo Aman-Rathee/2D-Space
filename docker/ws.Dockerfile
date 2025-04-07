@@ -4,13 +4,13 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml turbo.json ./
 COPY packages packages
-COPY apps/backend apps/backend
+COPY apps/ws apps/ws
 
 RUN npm install -g pnpm turbo
 RUN pnpm install --frozen-lockfile
 RUN pnpm db:generate
 RUN pnpm build
 
-EXPOSE 3001
+EXPOSE 8080
 
-CMD [ "pnpm", "start:backend" ]
+CMD [ "pnpm", "start:ws" ]
