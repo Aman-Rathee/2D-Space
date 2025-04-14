@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ArrowRight } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
 
@@ -9,7 +9,7 @@ export const backendUrl = 'http://localhost:3001/'
 const formFields = [
     {
         name: 'username',
-        placeholder: 'username',
+        placeholder: 'UserName',
         type: 'username',
         validation: {
             required: 'Username is required',
@@ -52,7 +52,20 @@ interface FormData {
 const SignupPage = () => {
     const navigate = useNavigate();
     const [isLoading, setIsLoading] = useState(false);
-    const { register, handleSubmit, formState: { errors } } = useForm();
+    const [usernameError, setUsernameError] = useState('');
+    const [emailError, setEmailError] = useState('');
+
+    const { register, handleSubmit, formState: { errors }, watch } = useForm();
+    const usernameValue = watch('username');
+    const emailValue = watch('email');
+
+    useEffect(() => {
+        setUsernameError('');
+    }, [usernameValue]);
+
+    useEffect(() => {
+        setEmailError('');
+    }, [emailValue]);
 
     const onSubmit = async (data: FormData) => {
         setIsLoading(true);
@@ -66,8 +79,15 @@ const SignupPage = () => {
                 navigate('/')
             }
             localStorage.setItem('token', response.data.token)
-        } catch (error) {
-            console.error("Error:", error);
+        } catch (error: any) {
+            if (error.response?.status === 400 && error.response.data?.message === 'Username already exists') {
+                setUsernameError('Username already exists');
+            } else if (
+                error.response?.status === 400 && error.response.data?.message === 'Email already exists') {
+                setEmailError('Email already exists');
+            } else {
+                console.error("Error:", error);
+            }
         } finally {
             setIsLoading(false);
         }
@@ -102,6 +122,16 @@ const SignupPage = () => {
                                 {errors[field.name] && (
                                     <div className="text-sm text-red-500 -mb-3 ml-2">
                                         {String(errors[field.name]?.message)}
+                                    </div>
+                                )}
+                                {field.name === 'username' && !errors.username && usernameError && (
+                                    <div className="text-sm text-red-500 -mb-3 ml-2">
+                                        {usernameError}
+                                    </div>
+                                )}
+                                {field.name === 'email' && !errors.email && emailError && (
+                                    <div className="text-sm text-red-500 -mb-3 ml-2">
+                                        {emailError}
                                     </div>
                                 )}
                             </div>

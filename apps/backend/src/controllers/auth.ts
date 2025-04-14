@@ -16,6 +16,25 @@ export const signup = async (req: Request, res: Response) => {
   }
 
   try {
+    const existingUser = await client.user.findFirst({
+      where: {
+        OR: [
+          { userName: parsedData.data.userName },
+          { email: parsedData.data.email }
+        ]
+      }
+    });
+    if (existingUser) {
+      if (existingUser.userName === parsedData.data.userName) {
+        res.status(400).json({ message: 'Username already exists' });
+        return
+      }
+      if (existingUser.email === parsedData.data.email) {
+        res.status(400).json({ message: 'Email already exists' });
+        return
+      }
+    }
+
     const hashedPassword = await hash(parsedData.data.password)
     const user = await client.user.create({
       data: {
