@@ -6,17 +6,18 @@
     "dev": "turbo dev",
     "lint": "turbo lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "start:frontend": "cd apps/frontend && pnpm dev",
     "db:generate": "cd packages/db && npx prisma generate",
+    "start:frontend": "cd apps/frontend && pnpm vite preview --host",
     "start:backend": "cd apps/backend && node dist/index.js",
-    "start:ws": "cd apps/ws && node dist/index.js"
+    "start:ws": "cd apps/ws && node dist/index.js",
+    "start:webrtc": "cd apps/webrtc && node dist/index.js"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
     "turbo": "^2.4.4",
     "typescript": "5.8.2"
   },
-  "packageManager": "pnpm@10.7.0",
+  "packageManager": "pnpm@10.8.1",
   "engines": {
     "node": ">=18"
   }
