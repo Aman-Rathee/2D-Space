@@ -350,10 +350,10 @@ export const VideoCall = () => {
                     </div>
                 ))}
             </div>
-            {localStream && <div className="fixed left-3 bottom-14 z-[1]">
+            {localStream && <div className="fixed left-3 bottom-14 z-1">
                 <video className="w-32 rounded-lg" ref={localVideoRef} muted autoPlay playsInline />
             </div>}
-            <div className="fixed bottom-0 left-0 right-0 border-t z-[1] border-slate-700 bg-slate-900 text-white">
+            <div className="fixed bottom-0 left-0 right-0 border-t z-1 border-slate-700 bg-slate-900 text-white">
                 <div className="px-4 py-1">
                     <div className="flex items-center justify-between">
                         <div className="flex-1 flex items-center justify-center gap-2">

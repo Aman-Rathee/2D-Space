@@ -55,7 +55,7 @@ export const Chat = ({ ws, className, setIsChatOpen }: { ws: WebSocket, classNam
                                 {...register('message', { required: true })}
                                 type="text"
                                 placeholder="Type a message..."
-                                className="flex-1 p-2 border rounded-l-lg focus:outline-none"
+                                className="flex-1 p-2 border rounded-l-lg focus:outline-hidden"
                                 onKeyDown={(e) => e.stopPropagation()}
                             />
                             <button type="submit" className="bg-blue-500 text-white px-4 rounded-r-lg hover:bg-blue-600">

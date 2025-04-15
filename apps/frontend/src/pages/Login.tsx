@@ -74,13 +74,13 @@ const LoginPage = () => {
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
                         {formFields.map((field) => (
                             <div key={field.name} className="relative">
-                                <div className="relative bg-gradient-to-r from-blue-500 to-indigo-600 rounded-xl overflow-hidden p-0.5">
+                                <div className="relative bg-linear-to-r from-blue-500 to-indigo-600 rounded-xl overflow-hidden p-0.5">
                                     <div className="flex items-center bg-white rounded-xl">
                                         <input
                                             {...register(field.name, field.validation)}
                                             type={field.type}
                                             placeholder={field.placeholder}
-                                            className="w-full bg-transparent px-4 py-4 rounded-xl text-black placeholder-zinc-500 focus:outline-none"
+                                            className="w-full bg-transparent px-4 py-4 rounded-xl text-black placeholder-zinc-500 focus:outline-hidden"
                                         />
                                     </div>
                                 </div>

@@ -49,7 +49,7 @@ const JoinSpace = () => {
                                 type='text'
                                 autoFocus
                                 placeholder={'Enter space Id'}
-                                className="w-full px-4 py-3 border-black border rounded-xl focus:outline-none"
+                                className="w-full px-4 py-3 border-black border rounded-xl focus:outline-hidden"
                             />
                             <div className="text-sm text-red-500 mt-1 ml-3">
                                 {errors.Id && <span>Id is required.</span>}
@@ -59,7 +59,7 @@ const JoinSpace = () => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-gradient-to-r bg-black hover:bg-gray-800 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 group transition-colors">
+                            className="w-full bg-linear-to-r bg-black hover:bg-gray-800 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 group transition-colors">
                             <span>{isLoading ? 'Joining...' : 'Join Space'}</span>
                             <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                         </button>

@@ -99,14 +99,14 @@ const MySpaces = () => {
                     </div>
                     <input
                         type="text"
-                        className="w-full pl-10 pr-4 py-3 bg-white rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-slate-500"
+                        className="w-full pl-10 pr-4 py-3 bg-white rounded-xl border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-slate-500"
                         placeholder="Search spaces..."
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
                 {loading ? <SpaceListSkeleton /> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredSpaces.map(space => (
-                        <div key={space.id} className="bg-white rounded-xl shadow-sm hover:shadow-2xl transition-shadow p-6 border border-gray-200">
+                        <div key={space.id} className="bg-white rounded-xl shadow-xs hover:shadow-2xl transition-shadow p-6 border border-gray-200">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex items-center gap-3">
                                     <div className="p-2 bg-indigo-100 rounded-lg">
@@ -170,7 +170,7 @@ function SpaceListSkeleton() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl shadow-sm transition-shadow p-6 border border-gray-200">
+                <div key={i} className="bg-white rounded-xl shadow-xs transition-shadow p-6 border border-gray-200">
                     <div className="flex justify-between items-start mb-6">
                         <Skeleton className="h-7 w-2/5" />
                         <Skeleton className="h-6 w-9" />

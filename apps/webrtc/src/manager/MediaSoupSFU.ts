@@ -233,8 +233,8 @@ export class MediaSoupSFU {
     async removeUserFromRoom(user: User) {
         const room = this.findRoomForUser(user);
         if (!room) return
-        room.users.delete(user);
         let producersId = user.getProducersId()
+        room.users.delete(user);
         room.users.forEach(peer => {
             peer.send({ type: 'userLeft', producersId });
         });

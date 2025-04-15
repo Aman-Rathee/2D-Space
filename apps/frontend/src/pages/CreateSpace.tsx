@@ -93,12 +93,12 @@ const CreateSpace = ({ isOpen, onClose, setMockSpaces }: CreateSpaceModalProps) 
                         {formFields.map((field) => (
                             field.required ? (<div key={field.name}>
                                 <label className="block text-sm font-medium mb-2">{field.label}</label>
-                                <div className="relative bg-gradient-to-r from-amber-500 to-orange-500 rounded-xl p-0.5">
+                                <div className="relative bg-linear-to-r from-amber-500 to-orange-500 rounded-xl p-0.5">
                                     <input autoFocus
                                         {...register(field.name, field.validation)}
                                         type={field.type}
                                         placeholder={field.placeholder}
-                                        className="w-full px-4 py-3 rounded-xl focus:outline-none"
+                                        className="w-full px-4 py-3 rounded-xl focus:outline-hidden"
                                     />
                                 </div>
                                 {errors[field.name] && (
@@ -112,7 +112,7 @@ const CreateSpace = ({ isOpen, onClose, setMockSpaces }: CreateSpaceModalProps) 
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className={`w-full bg-gradient-to-r bg-amber-500 ${!isLoading && 'hover:bg-amber-600'} text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 group transition-opacity ${isLoading && 'bg-amber-700 cursor-not-allowed'}`}>
+                            className={`w-full bg-linear-to-r bg-amber-500 ${!isLoading && 'hover:bg-amber-600'} text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 group transition-opacity ${isLoading && 'bg-amber-700 cursor-not-allowed'}`}>
                             <span>{isLoading ? 'Creating...' : 'Create Space'}</span>
                             {isLoading ?
                                 <Loader className="h-4 w-4 transition-transform animate-spin" />

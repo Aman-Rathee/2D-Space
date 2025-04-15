@@ -15,7 +15,7 @@ const Home = () => {
                             <span className="text-sm font-medium">Join the Space</span>
                         </div>
 
-                        <h1 className="text-6xl font-bold leading-tight mb-6 bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
+                        <h1 className="text-6xl font-bold leading-tight mb-6 bg-linear-to-r from-gray-900 via-gray-800 to-gray-900 bg-clip-text text-transparent">
                             Your Virtual Universe Awaits
                         </h1>
 
@@ -35,7 +35,7 @@ const Home = () => {
                         <div className="flex items-center space-x-6">
                             <Link to='/spaces'>
                                 <button className="group relative px-8 py-3 border-2 border-gray-400 hover:text-gray-800 text-black rounded-3xl overflow-hidden">
-                                    <div className="absolute inset-0 bg-gradient-to-r from-yellow-200 to-blue-300 opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    <div className="absolute inset-0 bg-linear-to-r from-yellow-200 to-blue-300 opacity-0 group-hover:opacity-100 transition-opacity" />
                                     <span className="relative flex items-center">
                                         Launch Space
                                         <ArrowRight className="ml-2 h-4 w-4" />
