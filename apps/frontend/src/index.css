@@ -1,19 +1,60 @@
 @import 'tailwindcss';
 
-/*
-  The default border color has changed to `currentcolor` in Tailwind CSS v4,
-  so we've added these compatibility styles to make sure everything still
-  looks the same as it did with Tailwind CSS v3.
-
-  If we ever want to remove these styles, we need to add an explicit border
-  color utility to any element that depends on these defaults.
-*/
 @layer base {
+
   *,
   ::after,
   ::before,
   ::backdrop,
   ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
+    border-color: var(--color-border, currentcolor);
   }
+}
+
+
+@theme {
+  --color-border: oklch(1 0 0 / 0.1);
+
+  --color-foreground-50: oklch(93.21% 0.035 291.00);
+  --color-foreground-100: oklch(86.68% 0.070 290.24);
+  --color-foreground-200: oklch(73.50% 0.145 287.66);
+  --color-foreground-300: oklch(61.11% 0.218 283.17);
+  --color-foreground-400: oklch(51.04% 0.277 275.51);
+  --color-foreground-500: oklch(45.78% 0.309 266.79);
+  --color-foreground-600: oklch(38.78% 0.261 267.22);
+  --color-foreground-700: oklch(31.45% 0.210 267.99);
+  --color-foreground-800: oklch(23.68% 0.156 269.66);
+  --color-foreground-900: oklch(15.26% 0.096 274.48);
+  --color-foreground-950: oklch(10.63% 0.065 279.56);
+
+  --color-background-50: oklch(90.52% 0.025 273.48);
+  --color-background-100: oklch(80.88% 0.052 272.98);
+  --color-background-200: oklch(71.26% 0.082 270.74);
+  --color-background-300: oklch(61.38% 0.112 269.97);
+  --color-background-400: oklch(51.56% 0.145 268.40);
+  --color-background-500: oklch(44.15% 0.121 268.36);
+  --color-background-600: oklch(36.42% 0.095 268.26);
+  --color-background-700: oklch(28.01% 0.068 269.92);
+  --color-background-800: oklch(23.39% 0.052 269.24);
+  --color-background-900: oklch(19.21% 0.037 270.81);
+  --color-background-950: oklch(14.62% 0.020 268.30);
+
+  --color-primary-50: oklch(97.31% 0.022 80.69);
+  --color-primary-100: oklch(94.89% 0.043 81.89);
+  --color-primary-200: oklch(90.01% 0.085 81.41);
+  --color-primary-300: oklch(88.12% 0.102 80.32);
+  --color-primary-400: oklch(81.03% 0.151 76.28);
+  --color-primary-500: oklch(77.15% 0.165 70.34);
+  --color-primary-600: oklch(65.40% 0.140 70.65);
+  --color-primary-700: oklch(53.09% 0.113 71.16);
+  --color-primary-800: oklch(40.09% 0.083 74.05);
+  --color-primary-900: oklch(25.84% 0.051 78.08);
+  --color-primary-950: oklch(18.04% 0.034 82.94);
+
+}
+
+
+body {
+  background-color: var(--color-background-800);
+  color: var(--color-foreground-50);
 }

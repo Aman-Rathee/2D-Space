@@ -19,30 +19,29 @@ const Navbar = () => {
     }
 
     return (
-        <header className="flex items-center justify-between px-4 sm:px-20 py-3 bg-white border-b border-gray-300">
-            <div className="flex items-center space-x-8">
+        <header className="flex items-center justify-between px-4 sm:px-32 py-3 border-b">
+            <div className="flex items-center space-x-12">
                 <Link to="/" className="text-xl font-bold">2D-Space</Link>
-                <nav className="space-x-6">
-                    <Link to="/spaces" className="text-gray-600 hover:text-gray-900">My Spaces</Link>
+                <nav>
+                    <Link to="/spaces" className="hover:opacity-50 transition-opacity">My Spaces</Link>
                 </nav>
             </div>
-            <div className="flex-1 mx-8 hidden sm:block h-px bg-black"></div>
             {!isLogin ? <div className="flex gap-4">
                 <Link
                     to="/login"
-                    className="px-4 py-2 text-sm font-medium border-2 border-gray-600 rounded-lg hover:bg-gray-200"
+                    className="px-4 py-2 text-sm font-medium border-2 hover:bg-background-700 hover:-translate-y-0.5 transition-all rounded-lg"
                 >
                     Log in
                 </Link>
                 <Link
                     to="/signup"
-                    className="px-4 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800"
+                    className="px-4 py-2 text-sm font-medium text-foreground-950 bg-primary-400 hover:opacity-90 hover:-translate-y-0.5 transition-all rounded-lg"
                 >
                     Sign up
                 </Link>
             </div> :
                 <div className="flex gap-4">
-                    <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 text-sm font-medium text-white bg-black rounded-lg hover:bg-gray-800">
+                    <button onClick={() => setIsModalOpen(true)} className="px-4 py-2 cursor-pointer text-sm font-medium hover:bg-background-700 hover:-translate-y-0.5 transition-all border rounded-lg">
                         Log Out
                     </button>
                 </div>
