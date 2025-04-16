@@ -3,13 +3,13 @@ import { authRouter } from "./auth";
 import { userRouter } from "./user";
 import { spaceRouter } from "./space";
 import { adminRouter } from "./admin";
-import client from '@repo/db/client';
+import { prisma } from '@repo/db';
 
 export const router: Router = Router();
 
 router.get("/elements", async (req, res) => {
     try {
-        const elements = await client.element.findMany()
+        const elements = await prisma.element.findMany()
         res.json({
             elements: elements.map((e: { id: string; imageUrl: string; width: number; height: number; static: boolean; }) => ({
                 id: e.id,
@@ -29,7 +29,7 @@ router.get("/elements", async (req, res) => {
 
 router.get("/avatars", async (req, res) => {
     try {
-        const avatars = await client.avatar.findMany()
+        const avatars = await prisma.avatar.findMany()
         res.json({
             avatars: avatars.map((x: { id: string; imageUrl: string; name: string; }) => ({
                 id: x.id,

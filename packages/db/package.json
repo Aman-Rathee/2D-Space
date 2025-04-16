@@ -2,7 +2,7 @@
   "name": "@repo/db",
   "version": "1.0.0",
   "exports": {
-    "./client": "./src/index.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "generate": "npx prisma generate"

@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { signinSchema, signupSchema } from "../types/index";
-import client from '@repo/db/client';
+import { prisma } from '@repo/db';
 import jwt from "jsonwebtoken"
 import "dotenv/config"
 import { compare, hash } from "../scrypt";
@@ -16,7 +16,7 @@ export const signup = async (req: Request, res: Response) => {
   }
 
   try {
-    const existingUser = await client.user.findFirst({
+    const existingUser = await prisma.user.findFirst({
       where: {
         OR: [
           { userName: parsedData.data.userName },
@@ -36,7 +36,7 @@ export const signup = async (req: Request, res: Response) => {
     }
 
     const hashedPassword = await hash(parsedData.data.password)
-    const user = await client.user.create({
+    const user = await prisma.user.create({
       data: {
         email: parsedData.data.email,
         userName: parsedData.data.userName,
@@ -60,7 +60,7 @@ export const login = async (req: Request, res: Response) => {
   }
 
   try {
-    const user = await client.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email: parsedData.data.email }
     })
 

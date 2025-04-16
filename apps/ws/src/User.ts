@@ -1,6 +1,6 @@
 import { WebSocket } from "ws";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import client from "@repo/db/client";
+import { prisma } from "@repo/db";
 import 'dotenv/config'
 import { RoomManager } from "./RoomManager";
 
@@ -37,7 +37,7 @@ export class User {
                         return
                     }
                     this.userId = userId
-                    const space = await client.space.findFirst({
+                    const space = await prisma.space.findFirst({
                         where: {
                             id: spaceId
                         }

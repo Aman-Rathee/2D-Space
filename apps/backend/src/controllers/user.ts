@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import client from '@repo/db/client';
+import { prisma } from '@repo/db';
 import { updateMetadataSchema } from "../types";
 
 
@@ -11,7 +11,7 @@ export const metadata = async (req: Request, res: Response) => {
   }
 
   try {
-    await client.user.update({
+    await prisma.user.update({
       where: {
         id: req.userId
       },
@@ -33,7 +33,7 @@ export const bulkMetadata = async (req: Request, res: Response) => {
   const userIds = (userIdString).slice(1, userIdString?.length - 1).split(",");
 
   try {
-    const metadata = await client.user.findMany({
+    const metadata = await prisma.user.findMany({
       where: {
         id: {
           in: userIds

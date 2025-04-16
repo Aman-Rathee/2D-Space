@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import client from '@repo/db/client';
+import { prisma } from '@repo/db';
 import { createAvatarSchema, createElementSchema, createMapSchema, updateElementSchema } from "../types";
 
 export const createElement = async (req: Request, res: Response) => {
@@ -10,7 +10,7 @@ export const createElement = async (req: Request, res: Response) => {
   }
 
   try {
-    const element = await client.element.create({
+    const element = await prisma.element.create({
       data: {
         width: parsedData.data.width,
         height: parsedData.data.height,
@@ -33,7 +33,7 @@ export const updateElement = async (req: Request, res: Response) => {
   }
 
   try {
-    await client.element.update({
+    await prisma.element.update({
       where: {
         id: req.params.elementId
       },
@@ -58,7 +58,7 @@ export const createAvatar = async (req: Request, res: Response) => {
   }
 
   try {
-    const avatar = await client.avatar.create({
+    const avatar = await prisma.avatar.create({
       data: {
         name: parsedData.data.name,
         imageUrl: parsedData.data.imageUrl
@@ -81,7 +81,7 @@ export const createMap = async (req: Request, res: Response) => {
   }
 
   try {
-    const map = await client.map.create({
+    const map = await prisma.map.create({
       data: {
         name: parsedData.data.name,
         width: parseInt(parsedData.data.dimensions.split("x")[0]),

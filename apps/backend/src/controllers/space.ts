@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { addElementToSpaceSchema, createSpaceSchema, deleteElementFromSpaceSchema } from "../types";
-import client from '@repo/db/client';
+import { prisma } from '@repo/db';
 
 export const createSpace = async (req: Request, res: Response) => {
   const parsedData = createSpaceSchema.safeParse(req.body)
@@ -10,7 +10,7 @@ export const createSpace = async (req: Request, res: Response) => {
   }
   try {
     if (!parsedData.data.mapId) {
-      const space = await client.space.create({
+      const space = await prisma.space.create({
         data: {
           name: parsedData.data.name,
           width: parseInt(parsedData.data.dimensions.split("x")[0]),
@@ -21,7 +21,7 @@ export const createSpace = async (req: Request, res: Response) => {
       res.json({ spaceId: space.id })
       return;
     }
-    const map = await client.map.findFirst({
+    const map = await prisma.map.findFirst({
       where: {
         id: parsedData.data.mapId
       }, select: {
@@ -34,8 +34,8 @@ export const createSpace = async (req: Request, res: Response) => {
       res.status(400).json({ message: "Map not found" })
       return
     }
-    let space = await client.$transaction(async () => {
-      const space = await client.space.create({
+    let space = await prisma.$transaction(async () => {
+      const space = await prisma.space.create({
         data: {
           name: parsedData.data.name,
           width: map.width,
@@ -44,7 +44,7 @@ export const createSpace = async (req: Request, res: Response) => {
         }
       });
 
-      await client.spaceElements.createMany({
+      await prisma.spaceElements.createMany({
         data: map.mapElements.map(e => ({
           spaceId: space.id,
           elementId: e.elementId,
@@ -67,7 +67,7 @@ export const createSpace = async (req: Request, res: Response) => {
 
 export const getSpace = async (req: Request, res: Response) => {
   try {
-    const space = await client.space.findUnique({
+    const space = await prisma.space.findUnique({
       where: {
         id: req.params.spaceId
       },
@@ -108,7 +108,7 @@ export const getSpace = async (req: Request, res: Response) => {
 
 export const allSpaces = async (req: Request, res: Response) => {
   try {
-    const spaces = await client.space.findMany({
+    const spaces = await prisma.space.findMany({
       where: {
         creatorId: req.userId!
       }
@@ -130,7 +130,7 @@ export const allSpaces = async (req: Request, res: Response) => {
 
 export const deleteSpace = async (req: Request, res: Response) => {
   try {
-    const space = await client.space.findUnique({
+    const space = await prisma.space.findUnique({
       where: {
         id: req.params.spaceId
       }, select: {
@@ -147,7 +147,7 @@ export const deleteSpace = async (req: Request, res: Response) => {
       return
     }
 
-    await client.space.delete({
+    await prisma.space.delete({
       where: {
         id: req.params.spaceId
       }
@@ -169,7 +169,7 @@ export const addElementToSpace = async (req: Request, res: Response) => {
   }
 
   try {
-    const space = await client.space.findUnique({
+    const space = await prisma.space.findUnique({
       where: {
         id: req.body.spaceId,
         creatorId: req.userId!
@@ -187,7 +187,7 @@ export const addElementToSpace = async (req: Request, res: Response) => {
       res.status(400).json({ message: "Space not found" })
       return
     }
-    await client.spaceElements.create({
+    await prisma.spaceElements.create({
       data: {
         spaceId: req.body.spaceId,
         elementId: req.body.elementId,
@@ -211,7 +211,7 @@ export const deleteElementFromSpace = async (req: Request, res: Response) => {
     return
   }
   try {
-    const spaceElement = await client.spaceElements.findFirst({
+    const spaceElement = await prisma.spaceElements.findFirst({
       where: {
         id: parsedData.data.id
       },
@@ -223,7 +223,7 @@ export const deleteElementFromSpace = async (req: Request, res: Response) => {
       res.status(403).json({ message: "Unauthorized" })
       return
     }
-    await client.spaceElements.delete({
+    await prisma.spaceElements.delete({
       where: {
         id: parsedData.data.id
       }
