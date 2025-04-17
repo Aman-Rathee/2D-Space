@@ -79,7 +79,7 @@ const CreateSpace = ({ isOpen, onClose, setMockSpaces }: CreateSpaceModalProps) 
 
     return (
         <div className="fixed inset-0 flex py-3 justify-center">
-            <div className="fixed inset-0 backdrop-blur-xs bg-background-700/75" onClick={() => { if (!isLoading) onClose() }}></div>
+            <div className="fixed inset-0 backdrop-blur-xs bg-background-700/70" onClick={() => { if (!isLoading) onClose() }}></div>
             <div className="w-full max-w-2xl overflow-auto [scrollbar-width:none]">
                 <div className="relative bg-foreground-300/40 rounded-2xl shadow-xl p-8">
                     <div className="flex justify-center items-center gap-3 mb-2">
@@ -122,7 +122,7 @@ const CreateSpace = ({ isOpen, onClose, setMockSpaces }: CreateSpaceModalProps) 
                     </form>
                     <p className="mt-8 text-center">
                         Launch an existing?{' '}
-                        <span onClick={() => { if (!isLoading) onClose() }} className="text-primary-300 cursor-pointer transition-colors font-semibold hover:text-primary-400">
+                        <span onClick={() => { if (!isLoading) onClose() }} className="text-primary-400 cursor-pointer transition-colors font-semibold hover:text-primary-500">
                             Launch Space
                         </span>
                     </p>

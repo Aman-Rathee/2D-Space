@@ -34,14 +34,14 @@ const JoinSpace = () => {
     };
 
     return (
-        <div className="min-h-[calc(100vh-60px)] overflow-hidden relative flex bg-slate-100">
+        <div className="min-h-[calc(100vh-60px)] overflow-hidden relative flex">
             <div className="w-full max-w-2xl mx-auto p-8 relative">
-                <div className="backdrop-blur-lg bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-shadow p-8">
+                <div className="backdrop-blur-lg bg-foreground-300/30 rounded-2xl shadow-2xl transition-shadow p-8">
                     <div className="flex items-center justify-center gap-3 mb-7">
                         <h1 className="text-3xl font-bold">Join Space</h1>
                     </div>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <form autoComplete='off' onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-foreground-100">
                         <div>
                             <label className="block text-sm font-medium mb-2">Space Id</label>
                             <input
@@ -49,7 +49,7 @@ const JoinSpace = () => {
                                 type='text'
                                 autoFocus
                                 placeholder={'Enter space Id'}
-                                className="w-full px-4 py-3 border-black border rounded-xl focus:outline-hidden"
+                                className="w-full px-4 py-3 bg-foreground-300/50 rounded-lg focus:outline-hidden"
                             />
                             <div className="text-sm text-red-500 mt-1 ml-3">
                                 {errors.Id && <span>Id is required.</span>}
@@ -59,15 +59,15 @@ const JoinSpace = () => {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-linear-to-r bg-black hover:bg-gray-800 text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 group transition-colors">
+                            className="w-full text-foreground-900 bg-primary-400 hover:bg-primary-500 rounded-lg py-3 font-medium flex items-center justify-center gap-2 group transition-colors">
                             <span>{isLoading ? 'Joining...' : 'Join Space'}</span>
-                            <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+                            <ArrowRight strokeWidth={3} className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                         </button>
                     </form>
-                    <p className="mt-8 text-center text-zinc-700">
+                    <p className="mt-8 text-center">
                         Create your own space?{' '}
-                        <Link to="/spaces" className="text-orange-500 font-semibold hover:text-orange-600">
-                            Create Space
+                        <Link to="/spaces" className="text-primary-300 cursor-pointer transition-colors font-semibold hover:text-primary-400">
+                            Launch Space
                         </Link>
                     </p>
                 </div>
