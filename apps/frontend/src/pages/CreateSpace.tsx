@@ -79,26 +79,26 @@ const CreateSpace = ({ isOpen, onClose, setMockSpaces }: CreateSpaceModalProps) 
 
     return (
         <div className="fixed inset-0 flex py-3 justify-center">
-            <div className="fixed inset-0 bg-black bg-opacity-60" onClick={() => { if (!isLoading) onClose() }}></div>
+            <div className="fixed inset-0 backdrop-blur-xs bg-background-700/75" onClick={() => { if (!isLoading) onClose() }}></div>
             <div className="w-full max-w-2xl overflow-auto [scrollbar-width:none]">
-                <div className="backdrop-blur-lg bg-orange-200 rounded-2xl shadow-xl p-8">
+                <div className="relative bg-foreground-300/40 rounded-2xl shadow-xl p-8">
                     <div className="flex justify-center items-center gap-3 mb-2">
-                        <div className="p-2 bg-amber-500 rounded-lg">
-                            <Plus className="h-4 w-4 text-orange-200" />
+                        <div className="p-1.5 bg-primary-400 rounded">
+                            <Plus strokeWidth={4} className="h-5 w-5 text-primary-700" />
                         </div>
-                        <h1 className="text-2xl text-amber-800 font-bold">Create New Space</h1>
+                        <h1 className="text-2xl font-bold">Create New Space</h1>
                     </div>
                     <SelectMap mapId={mapId} setMapId={setMapId} />
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                    <form autoComplete='off' onSubmit={handleSubmit(onSubmit)} className="space-y-6 text-foreground-100">
                         {formFields.map((field) => (
                             field.required ? (<div key={field.name}>
                                 <label className="block text-sm font-medium mb-2">{field.label}</label>
-                                <div className="relative bg-linear-to-r from-amber-500 to-orange-500 rounded-xl p-0.5">
+                                <div className="relative bg-foreground-300/50 rounded-lg p-0.5">
                                     <input autoFocus
                                         {...register(field.name, field.validation)}
                                         type={field.type}
                                         placeholder={field.placeholder}
-                                        className="w-full px-4 py-3 rounded-xl focus:outline-hidden"
+                                        className="w-full px-4 py-2.5 focus:outline-hidden"
                                     />
                                 </div>
                                 {errors[field.name] && (
@@ -112,17 +112,17 @@ const CreateSpace = ({ isOpen, onClose, setMockSpaces }: CreateSpaceModalProps) 
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className={`w-full bg-linear-to-r bg-amber-500 ${!isLoading && 'hover:bg-amber-600'} text-white rounded-xl py-3 font-medium flex items-center justify-center gap-2 group transition-opacity ${isLoading && 'bg-amber-700 cursor-not-allowed'}`}>
+                            className={`w-full bg-primary-400 text-foreground-900 cursor-pointer rounded-lg py-3 font-medium flex items-center justify-center gap-2 group transition-opacity ${isLoading && 'bg-primary-600 cursor-not-allowed'}`}>
                             <span>{isLoading ? 'Creating...' : 'Create Space'}</span>
                             {isLoading ?
                                 <Loader className="h-4 w-4 transition-transform animate-spin" />
-                                : <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+                                : <ArrowRight strokeWidth={3} className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                             }
                         </button>
                     </form>
-                    <p className="mt-8 text-center text-zinc-700">
+                    <p className="mt-8 text-center">
                         Launch an existing?{' '}
-                        <span onClick={() => { if (!isLoading) onClose() }} className="text-orange-500 cursor-pointer font-semibold hover:text-orange-600">
+                        <span onClick={() => { if (!isLoading) onClose() }} className="text-primary-300 cursor-pointer transition-colors font-semibold hover:text-primary-400">
                             Launch Space
                         </span>
                     </p>

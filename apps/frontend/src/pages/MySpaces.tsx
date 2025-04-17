@@ -75,19 +75,16 @@ const MySpaces = () => {
     );
 
     return (
-        <div className="min-h-screen relative overflow-hidden bg-slate-50">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_40%,rgba(35,233,190,0.4),transparent_55%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_70%,rgba(100,200,255,0.7),transparent_50%)]" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-lime-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30" />
+        <div className="min-h-screen relative overflow-hidden">
             <div className="max-w-7xl relative mx-auto p-8">
                 <div className="flex justify-between items-center mb-8">
                     <div>
                         <h1 className="text-3xl font-bold">My Spaces</h1>
-                        <p className="text-slate-600 mt-1">Manage and monitor your virtual spaces</p>
+                        <p className="mt-1 text-foreground-100">Manage and monitor your virtual spaces</p>
                     </div>
                     <button
                         onClick={() => setIsCreateSpaceModalOpen(true)}
-                        className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-xl hover:opacity-80 transition-opacity"
+                        className="flex items-center gap-2 bg-primary-400 text-foreground-950 px-4 py-2 rounded-lg hover:opacity-90 transition-all cursor-pointer hover:-translate-y-1"
                     >
                         <Plus className="h-5 w-5" />
                         Create Space
@@ -95,47 +92,46 @@ const MySpaces = () => {
                 </div>
                 <div className="relative mb-8">
                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                        <Search className="h-5 w-5 text-gray-400" />
+                        <Search className="h-5 w-5 text-foreground-100" />
                     </div>
                     <input
                         type="text"
-                        className="w-full pl-10 pr-4 py-3 bg-white rounded-xl border border-gray-200 focus:outline-hidden focus:ring-2 focus:ring-slate-500"
+                        className="w-full pl-10 pr-4 py-3 bg-foreground-300/30 rounded-lg border border-foreground-300/40 focus:outline-hidden focus:ring-2 focus:ring-foreground-300/80"
                         placeholder="Search spaces..."
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
                 {loading ? <SpaceListSkeleton /> : <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {filteredSpaces.map(space => (
-                        <div key={space.id} className="bg-white rounded-xl shadow-xs hover:shadow-2xl transition-shadow p-6 border border-gray-200">
+                        <div key={space.id} className="bg-foreground-300/30 rounded-lg shadow-xs hover:shadow-2xl transition-shadow p-6">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex items-center gap-3">
-                                    <div className="p-2 bg-indigo-100 rounded-lg">
-                                        <Layout className="h-5 w-5 text-indigo-600" />
+                                    <div className="p-2 bg-primary-700/30 rounded-lg">
+                                        <Layout strokeWidth={3} className="h-5 w-5 text-primary-600" />
                                     </div>
                                     <h3 className="font-semibold text-lg">{space.name}</h3>
                                 </div>
-                                <div onClick={() => handleOpenModal(space.id)} className="p-2 hover:bg-gray-200 transition-all cursor-pointer rounded-md">
-                                    <Trash2 className="h-4 w-4 text-gray-500" />
+                                <div onClick={() => handleOpenModal(space.id)} className="p-2 hover:bg-destructive/20 transition-color cursor-pointer rounded-md">
+                                    <Trash2 strokeWidth={3} className="h-4 w-4 text-destructive" />
                                 </div>
                             </div>
-
-                            <div className="space-y-3">
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Dimensions:</span>
-                                    <span className="font-medium">{space.dimensions}</span>
+                            <div className="space-y-3 font-bold">
+                                <div className="flex justify-between text-sm opacity-70">
+                                    <span className="">Dimensions:</span>
+                                    <span className="font-light">{space.dimensions}</span>
                                 </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-gray-500">Space ID:</span>
-                                    <span className="font-medium">{space.id}</span>
+                                <div className="flex justify-between text-sm opacity-70">
+                                    <span className="">Space ID:</span>
+                                    <span className="font-light">{space.id}</span>
                                 </div>
                                 <div className="flex justify-between items-center pt-4 border-t">
                                     <div className="flex items-center gap-2">
-                                        <Users className="h-4 w-4 text-gray-400" />
-                                        <span className="text-sm text-gray-500">Users:</span>
+                                        <Users strokeWidth={3} className="h-4 w-4 text-primary-500" />
+                                        <span className="text-sm">Users:</span>
                                     </div>
                                     <Link
                                         to={`/space/${space.id}`}>
-                                        <button className="bg-blue-500 text-indigo-100 px-2 py-1 rounded-lg">
+                                        <button className="bg-foreground-300 transition-transform cursor-pointer px-2 py-1 rounded-md hover:-translate-y-0.5">
                                             Join
                                         </button>
                                     </Link>
@@ -170,7 +166,7 @@ function SpaceListSkeleton() {
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Array.from({ length: 8 }).map((_, i) => (
-                <div key={i} className="bg-white rounded-xl shadow-xs transition-shadow p-6 border border-gray-200">
+                <div key={i} className="bg-foreground-300/30 rounded-lg shadow-xs transition-shadow p-6">
                     <div className="flex justify-between items-start mb-6">
                         <Skeleton className="h-7 w-2/5" />
                         <Skeleton className="h-6 w-9" />
@@ -184,9 +180,9 @@ function SpaceListSkeleton() {
                             <Skeleton className="h-4 w-1/4 mb-2" />
                             <Skeleton className="h-4 w-3/5 mb-2" />
                         </div>
-                        <div className="flex justify-between items-center pt-4 border-t">
-                            <Skeleton className="h-6 w-2/6" />
-                            <Skeleton className="h-6 w-1/5" />
+                        <div className="flex justify-between items-center pt-3 border-t">
+                            <Skeleton className="h-7 w-2/6" />
+                            <Skeleton className="h-7 w-1/5" />
                         </div>
                     </div>
                 </div>

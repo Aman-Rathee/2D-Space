@@ -1,3 +1,4 @@
+import { Check } from "lucide-react";
 import { useState } from "react";
 
 interface Card {
@@ -25,16 +26,18 @@ export const SelectMap = ({ mapId, setMapId }: { mapId: number | null, setMapId:
     return (
         <>
             <div className="max-w-6xl mx-auto">
-                <h1 className="text-lg font-bold">Select your Map.</h1>
+                <h1 className="text-lg font-bold text-foreground-100">Select your Map.</h1>
                 <div className="flex w-full p-5 gap-6 overflow-x-auto [scrollbar-width:none]">
                     {cards.map((card) => (
                         <div
                             key={card.id}
                             onClick={() => handleCardClick(card.id)}
-                            className={`bg-white flex-none w-56 rounded-xl cursor-pointer transform transition-all duration-300 ${selectedCard === card.id ? 'ring-2 ring-gray-600 scale-105 hover:scale-105' : 'hover:scale-[102%] hover:shadow-lg'}`}
+                            className={`bg-background-700/20 flex-none w-56 rounded-xl cursor-pointer transition-all duration-300 ${selectedCard === card.id ? 'scale-[102%] shadow-lg' : 'hover:scale-[102%] hover:shadow-lg'}`}
                         >
                             {selectedCard === card.id && (
-                                <div className="absolute inset-0 bg-black opacity-50 rounded-xl"></div>
+                                <div className="absolute inset-0 bg-foreground-950/30 rounded-xl flex items-center justify-center">
+                                    <Check strokeWidth={3} className="h-16 w-16" />
+                                </div>
                             )}
                             <img
                                 src={card.src}
@@ -42,7 +45,7 @@ export const SelectMap = ({ mapId, setMapId }: { mapId: number | null, setMapId:
                                 className="h-36 w-full rounded-xl text-center object-cover overflow-hidden"
                             />
                             <div className="p-4">
-                                <h3 className="text-lg font-semibold text-gray-800">{card.title}</h3>
+                                <h3 className="text-lg font-semibold text-primary-500">{card.title}</h3>
                             </div>
                         </div>
                     ))}

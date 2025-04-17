@@ -51,6 +51,8 @@
   --color-primary-900: oklch(25.84% 0.051 78.08);
   --color-primary-950: oklch(18.04% 0.034 82.94);
 
+  --color-destructive: oklch(0.577 0.245 27.325);
+
 }
 
 

@@ -7,7 +7,7 @@ const Home = () => {
             <div className="max-w-7xl mx-auto px-4 py-24">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div className="relative z-10">
-                        <div className="inline-flex items-center space-x-2 bg-background-300 rounded-full px-4 py-2 mb-6">
+                        <div className="inline-flex items-center text-black space-x-2 bg-foreground-300 rounded-full px-3 py-1 mb-6">
                             <Sparkles className="h-4 w-4" />
                             <span className="text-sm font-medium">Join the Space</span>
                         </div>
@@ -45,12 +45,12 @@ const Home = () => {
                     </div>
 
                     <div className="relative">
-                        <div className="rounded-4xl border-[18px] border-border overflow-hidden h-5/6">
+                        <div className="rounded-4xl border-[18px] border-foreground-300/50 overflow-hidden h-5/6">
                             <img
                                 id="game-image"
                                 alt="Game"
                                 src="./maps/map1/photo.png"
-                                className="w-full h-full object-cover rounded-2xl"
+                                className="w-full h-full object-cover rounded-xl"
                             />
                         </div>
                     </div>
