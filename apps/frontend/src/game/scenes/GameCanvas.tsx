@@ -34,7 +34,7 @@ function GameCanvas() {
 
     return (
         <>
-            <div className="h-screen w-screen flex items-center justify-center bg-slate-800 overflow-hidden">
+            <div className="h-screen w-screen flex items-center justify-center overflow-hidden">
                 <div id="phaser-game" key='phaser-gamer' ref={gameContainerRef} />
                 <VideoCall />
             </div>

@@ -188,7 +188,7 @@ export default class MultiplayerGame extends Scene {
 
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setZoom(2);
-        this.cameras.main.setBackgroundColor('#1e293b');
+        this.cameras.main.setBackgroundColor('#141c36');
 
         const boundariesLayer = this.map.getObjectLayer('boundaries');
         const boundaries = this.physics.add.staticGroup();
@@ -242,7 +242,7 @@ export default class MultiplayerGame extends Scene {
                 }
             }, 200);
 
-            this.playerTimers.set(id, idleTimer);
+            this.playerTimers.set(id, Number(idleTimer));
         }
     }
 

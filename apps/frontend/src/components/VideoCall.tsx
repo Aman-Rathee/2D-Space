@@ -353,12 +353,12 @@ export const VideoCall = () => {
             {localStream && <div className="fixed left-3 bottom-14 z-1">
                 <video className="w-32 rounded-lg" ref={localVideoRef} muted autoPlay playsInline />
             </div>}
-            <div className="fixed bottom-0 left-0 right-0 border-t z-1 border-slate-700 bg-slate-900 text-white">
+            <div className="fixed bottom-0 left-0 right-0 border-t z-1 bg-background-900">
                 <div className="px-4 py-1">
                     <div className="flex items-center justify-between">
                         <div className="flex-1 flex items-center justify-center gap-2">
                             {controls.map(({ icon: Icon, label, onClick, isActive, color }) => (
-                                <button key={label} onClick={onClick} className={`flex flex-col items-center p-2 rounded-full transition-colors ${isActive ? color : 'bg-slate-700 hover:bg-slate-600'}`}>
+                                <button key={label} onClick={onClick} className={`flex flex-col items-center p-2 rounded-full cursor-pointer transition-colors outline-none ${isActive ? color : 'bg-background-600 hover:bg-background-700'}`}>
                                     <Icon className="w-6 h-6" />
                                 </button>
                             ))}
