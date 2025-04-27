@@ -2,13 +2,15 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-COPY package.json pnpm-lock.yaml* turbo.json ./
+RUN npm install -g pnpm turbo
+
+COPY package.json pnpm-lock.yaml* pnpm-workspace.yaml turbo.json ./
 COPY packages packages
 COPY apps/frontend apps/frontend
 
-RUN npm install -g pnpm turbo
-RUN cd ./apps/frontend && pnpm install
+RUN pnpm install --frozen-lockfile
+RUN pnpm build
 
-EXPOSE 5173
+EXPOSE 4173
 
 CMD [ "pnpm", "start:frontend" ]
