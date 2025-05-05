@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  frontend:
+    container_name: frontend
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    ports:
+      - "4173:4173"
+
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: docker/backend.Dockerfile
+    ports:
+      - "3001:3001"
+
+  ws:
+    container_name: ws
+    build:
+      context: .
+      dockerfile: docker/ws.Dockerfile
+    ports:
+      - "8080:8080"
