@@ -1,5 +1,5 @@
 # 📽 Demo Video
-[Watch the demo video on Google Drive](https://drive.google.com/file/d/1jZTeR_HkqLg2Phm1TWYFF-1SLVOB_XSG/view?usp=sharing)
+[Watch the demo video on Google Drive](https://drive.google.com/file/d/1BLbRj41l1zKxuMOnhdLHLQzp6D34xS6K/view)
 
 # 2D Metaverse Space
 
@@ -106,4 +106,4 @@ git push origin feature/fooBar
 6. Go to [the repository](https://github.com/Aman-Rathee/2D-Space/pulls) and [make a Pull Request](https://docs.github.com/en/free-pro-team@latest/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request).
 
 ---
-We hope you enjoy building with **2D Metaverse Space**!
+I hope you enjoy building with **2D Metaverse Space**!
